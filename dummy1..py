@@ -77,17 +77,34 @@ def comparator(previous2,previous1,current):
     else:
         hypothesis[rules[3]] = 0
     return hypothesis
+
+def probability(previous2,previous1,current,comparison):
+    d = {'is_suit':{'D':0.25,'H':0.25,'S':0.25,'C':0.25},'is_value':{'even':0.14,'odd':0.14,'royal':0.14,'less':0.14,'greater':0.14,'plus1':0.14,'minus1':0.14},'is_color':{'R':0.5,'B':0.5}}
+    if (comparison['less'] == 1):
+        d['is_value']['less'] = d['is_value']['less'] + (0.005)
+    else:
+        d['is_value']['less'] = d['is_value']['less'] - ((0.005)/6)
+    if (comparison['greater'] == 1):
+        d['is_value']['greater'] = d['is_value']['greater'] + (0.005)
+    else:
+        d['is_value']['greater'] = d['is_value']['greater'] - ((0.005)/6)
+    if (comparison['plus1'] == 1):
+        d['is_value']['plus1'] = d['is_value']['plus1'] + (0.005)
+    else:
+        d['is_value']['plus1'] = d['is_value']['plus1'] - ((0.005)/6)
+    if (comparison['minus1'] == 1):
+        d['is_value']['minus1'] = d['is_value']['minus1'] + (0.005)
+    else:
+        d['is_value']['minus1'] = d['is_value']['minus1'] - ((0.005)/6)
+    return d
+
 previous2 = extraction(l[0])
 #print previous2['card']
 previous1 = extraction(l[1])
 current = extraction(l[2])
 comparison = comparator(previous2,previous1,current) 
-print l[1]
-print comparison
-def probability(previous2,previous1,current,comparison):
-    d = {'is_suit':{'D':0.25,'H':0.25,'S':0.25,'C':0.25},'is_value':{'even':0.14,'odd':0.14,'royal':0.14,'less':0.14,'greater':0.14,'plus1':0.14,'minus1':0.14},'is_color':{'R':0.5,'B':0.5}}
-    
-    rerturn d
+prob = probability(previous2,previous1,current,comparison)
+print prob
 
 
 
