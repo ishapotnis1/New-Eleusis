@@ -4,7 +4,7 @@ from new_eleusis import *
 
 correct = []
 wrong=[]
-l=['5S','6D','8C']
+l=['5S','6D','8S']
 def extraction(card):
     #dict = dict{}
     value1=value(card)
@@ -187,13 +187,24 @@ def probability(previous2,previous1,current,comparison):
         d['is_value']['royal'] = d['is_value']['royal'] - ((0.005)/6)
     return d
 
+def alternate(previous2,previous1,current,comparison):
+    alter = {}
+    for key in previous2:
+        if (previous2.get(key) == current.get(key) and current.get(key) == 1):
+            alter[key] = [];
+            for k in previous1:
+                if (key <> k and previous1[k] == 1):
+                    alter[key].append(k)
+    return alter
+#alternate suit, color , number
+
 previous2 = extraction(l[0])
-#print previous2['card']
 previous1 = extraction(l[1])
 current = extraction(l[2])
 comparison = comparator(previous2,previous1,current) 
 prob = probability(previous2,previous1,current,comparison)
-print prob
+alt = alternate(previous2,previous1,current,comparison)
+print alt
 
 
 
