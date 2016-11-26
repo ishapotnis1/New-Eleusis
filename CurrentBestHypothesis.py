@@ -6,7 +6,9 @@ def probability(x):
   return x;
 
 
-
+'''
+This function returns the list of rules which have to be tested. 
+'''
 def validator(x):
  forvalidation.append(x)
  return list
