@@ -4,7 +4,7 @@ from new_eleusis import *
 
 correct = []
 wrong=[]
-l=['5S','6D','8S']
+l=['4S','6D','8S']
 def extraction(card):
     #dict = dict{}
     value1=value(card)
@@ -193,7 +193,7 @@ def alternate(previous2,previous1,current,comparison):
         if (previous2.get(key) == current.get(key) and current.get(key) == 1):
             alter[key] = [];
             for k in previous1:
-                if (key <> k and previous1[k] == 1):
+                if (previous1[k] == 1):
                     alter[key].append(k)
     return alter
 #alternate suit, color , number
