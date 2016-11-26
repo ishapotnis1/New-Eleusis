@@ -1,6 +1,7 @@
 import itertools,random
 avg={'D':0.4,'royal':0.3,'even':0.33}
 high={'R':0.5,'odd':0.6}
+visited_rules=[]
 #return a royal 
 def create_royal():
     royal=['J','Q','K']
@@ -69,6 +70,7 @@ def card_generator():
     for i in perm:
         #separating rules from generated permutation
         rule1,rule2=i
+        #if rule1 in visited_rules and rule2
         if rule1!='even':
             if rule1!='odd':
                 if rule2!='odd':
