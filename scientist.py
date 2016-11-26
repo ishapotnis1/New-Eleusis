@@ -358,9 +358,11 @@ def main():
     current=card1
     comparison1=comparator(previous2,previous1,current)
     p1=probability(previous2,previous1,current,comparison)
+    a1=alternate(previous2,previous1,current,comparison)
     print "for next card" +'\n'
     print comparison1 
     print p1
+    print a1
 
 if __name__ == "__main__":
     main()    
