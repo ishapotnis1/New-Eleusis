@@ -3,13 +3,15 @@ from new_eleusis import *
 from scientist import *
 from card_generator import *
 
+count=0
 
+cb={}
 
 constraints={}
 currentBestHypothesis={}
 forvalidation={}
 threshold=0.0
-count=1
+
 
 
 """def alternate(a1t):
@@ -46,7 +48,7 @@ def current_best_hypothesis(hypothesis):
     constraints[field] = tempconstraints
     forvalidation[field] = tempValidation
 
-   print "THIS" ,currentBestHypothesis
+
 
 
 
@@ -76,13 +78,16 @@ def main():
     p1 = probability(previous2, previous1, current, comparison)
     a1 = alternate(previous2, previous1, current, comparison)
 
-    current_best_hypothesis(p1)
-#    alternate(a1)
+    cb=current_best_hypothesis(p1)
+    print "count" ,CurrentBestHypothesis.count
+    if CurrentBestHypothesis.count==3:
 
-    print "for next card " + '\n'
-    print comparison1
-    print p1
-    print "ALTERNATE" ,a1
+     for field, possible_values in  currentBestHypothesis.iteritems():
+      for a, x in possible_values.iteritems():
+       print field, a
+
+
+
 
 
 if __name__ == "__main__":
