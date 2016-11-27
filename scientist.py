@@ -2,17 +2,30 @@
 #AND_OR    
 from new_eleusis import *
 from card_generator import *
-
+import CurrentBestHypothesis
 correct = []
 wrong=[]
 l=['5S','6D','8C']
+#global prevres
+
+prevres=None
 
 def correct_wrong(card):
+    global prevres
+    print prevres
+    print "hbh",CurrentBestHypothesis.count
     x=raw_input("Press 'Y' if card is correct |  Press 'N' if card is wrong")
     if(x=='Y'):
-        correct.append(card)
-    elif(x=='N'):
-        wrong.append(card)
+
+     if prevres =='Y':
+      CurrentBestHypothesis.count= CurrentBestHypothesis.count+1
+     else:
+      CurrentBestHypothesis.count=0
+      correct.append(card)
+     prevres='Y'
+    elif(prevres=='N'):
+     wrong.append(card)
+     prevres='N'
         
         
 def extraction(card):
@@ -276,7 +289,11 @@ def probability(previous2,previous1,current,comparison):
         d['is_value']['less'] = d['is_value']['less'] - ((0.005)/18)
         d['is_value']['even'] = d['is_value']['even'] - ((0.005)/18)
         d['is_value']['royal'] = d['is_value']['royal'] - ((0.005)/18)
-        
+
+
+
+
+
     if(current['odd'] == 1):
         d['is_value']['odd'] = d['is_value']['odd'] + (0.005/3)
         d['is_value']['greater'] = d['is_value']['greater'] - ((0.005)/18)
@@ -340,33 +357,7 @@ def alternate(previous2,previous1,current,comparison):
 ##print alt
 
 
-def main():
-    previous2=extraction(l[0])
-    previous1=extraction(l[1])
-    current=extraction(l[2])
-    comparison=comparator(previous2,previous1,current)
-    p=probability(previous2,previous1,current,comparison)
-    #print "for first three cards"
-    #print comparison
-    #print p
-    card=card_generator()
-    print card +'\n'
-    correct_wrong(card)
-    card1=extraction(card)
-    previous2=previous1
-    previous1=current
-    current=card1
-    comparison1=comparator(previous2,previous1,current)
-    p1=probability(previous2,previous1,current,comparison)
-    a1=alternate(previous2,previous1,current,comparison)
-    print "for next card" +'\n'
-    print comparison1 
-    print p1
-    print a1
 
-if __name__ == "__main__":
-    main()    
-    
     
     
    
