@@ -28,7 +28,6 @@ def validator():
 
 
 
-
 def current_best_hypothesis(hypothesis):
   temp={}
   tempconstraints={}
@@ -51,7 +50,7 @@ def current_best_hypothesis(hypothesis):
 
 
 
-
+  print "this is",currentBestHypothesis
 
   return currentBestHypothesis
 
@@ -66,7 +65,7 @@ def main():
     # print "for first three cards"
     # print comparison
     # print p
-
+    print "hvnbvnbv", currentBestHypothesis
     card = card_generator()
 
     correct_wrong(card)
