@@ -5,10 +5,6 @@ from card_generator import *
 
 
 
-def validator():
- return forvalidation
-
-
 constraints={}
 currentBestHypothesis={}
 forvalidation={}
@@ -20,6 +16,12 @@ count=1
  for field, possible_values in hypothesis.iteritems():
   print  field, possible_values
    for a, x in possible_values.iteritems():"""
+
+
+
+
+def validator():
+ return forvalidation
 
 
 
@@ -53,7 +55,7 @@ def current_best_hypothesis(hypothesis):
 
 
 def main():
-
+  for i in range(1,100):
     previous2 = extraction(l[0])
     previous1 = extraction(l[1])
     current = extraction(l[2])
