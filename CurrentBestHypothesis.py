@@ -5,6 +5,10 @@ from card_generator import *
 
 
 
+def validator():
+ return forvalidation
+
+
 constraints={}
 currentBestHypothesis={}
 forvalidation={}
