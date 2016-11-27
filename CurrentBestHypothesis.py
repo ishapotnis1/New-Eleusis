@@ -40,20 +40,13 @@ def current_best_hypothesis(hypothesis):
     if x>0.005:
      temp[a]=x
     if x<0.002:
-     tempconstraints[a]=x
+     currentBestHypothesis[a] = x
     else:
-      tempValidation[a]=x
-    currentBestHypothesis[field] = temp
-    constraints[field] = tempconstraints
-    forvalidation[field] = tempValidation
-
-
-
+     forvalidation[a] = x
 
   print "this is",currentBestHypothesis
 
   return currentBestHypothesis
-
 
 def main():
   for i in range(1,100):
