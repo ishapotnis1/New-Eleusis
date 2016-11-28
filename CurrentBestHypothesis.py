@@ -3,7 +3,7 @@ from new_eleusis import *
 from scientist import *
 from card_generator import *
 
-count=0
+count=1
 
 cb={}
 
@@ -11,7 +11,8 @@ constraints={}
 currentBestHypothesis={}
 forvalidation={}
 threshold=0.0
-
+hypothesisforgeneration={}
+temp={}
 
 
 """def alternate(a1t):
@@ -29,24 +30,32 @@ def validator():
 
 
 def current_best_hypothesis(hypothesis):
-  temp={}
-  tempconstraints={}
-  tempValidation={}
+ temp={}
+ tempconstraints={}
+ tempValidation={}
+ for field, possible_values in hypothesis.iteritems():
+  for a,x in possible_values.iteritems():
+   if x>0.005:
+    temp[a]=x
+    hypothesisforgeneration[a]=x
+   if x<0.002:
+    tempconstraints[a]=x
+
+   if x>0.002 and x<0.005:
+    tempValidation[a]=x
+    forvalidation[a] = x
+   currentBestHypothesis[field] = temp
+   constraints[field] = tempconstraints
 
 
-  for field, possible_values in hypothesis.iteritems():
-   print  field , possible_values
-   for a,x in possible_values.iteritems():
-    if x>0.005:
-     temp[a]=x
-    if x<0.002:
-     currentBestHypothesis[a] = x
-    else:
-     forvalidation[a] = x
 
-  print "this is",currentBestHypothesis
 
-  return currentBestHypothesis
+
+  print "SRISHTY",currentBestHypothesis
+  print "NITIKA", hypothesisforgeneration
+
+  return hypothesisforgeneration
+
 
 def main():
   for i in range(1,100):
@@ -59,7 +68,7 @@ def main():
     # print comparison
     # print p
     print "hvnbvnbv", currentBestHypothesis
-    card = card_generator()
+    card = '4H'
 
     correct_wrong(card)
     card1 = extraction(card)
