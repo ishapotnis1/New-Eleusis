@@ -81,7 +81,8 @@ def main():
 
     cb=current_best_hypothesis(p1)
     print "count" ,CurrentBestHypothesis.count
-    if CurrentBestHypothesis.count==3:
+    if CurrentBestHypothesis.count==10:
+     print "hypothesis is", currentBestHypothesis
 
      for field, possible_values in  currentBestHypothesis.iteritems():
       for a, x in possible_values.iteritems():
