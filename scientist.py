@@ -13,15 +13,14 @@ wrong=[]
 #previous=[]
 global current
 current={}
-l=['4H','6D','8H']
+l=[]#'4H','6D','8H']
 #global prevres
 global alter
 alter = {}
 prevres=None
+flag=0
 
-def correct_wrong(card):
-    global flag
-    flag=0
+def correct_wrong(card,flag):
     print "?????",prevres
 
     #print "hbh",CurrentBestHypothesis.count
@@ -29,10 +28,12 @@ def correct_wrong(card):
     if(x=='Y'):
         flag+=1
         correct.append(card)
+        print "doubt",correct
     else:
         flag=0
         wrong.append(card)
-        
+        print "wrong",wrong
+print "end",correct        
         
 def extraction(card):
     #dict = dict{}
@@ -480,80 +481,82 @@ def main():
     x=raw_input("Is the God entering any cards?(Y/N)")
     if(x=='Y'):
         more='Y'
+        card=""
         while more=='Y':
             l.append(raw_input("Enter card as 3H,4B etc"))
             more=raw_input("Do you wish to enter more?(Y/N)")
-            
+        for i in l:
+            previous.append(i)
+            correct.append(i)
+        if len(previous)<3:
+            x=len(correct)
+            while len(previous)!=3:
+                card=card_generator.random_card()
+                correct_wrong(card,flag)            
+                if len(correct)>x:
+                    l.append(card)
+                    previous.append(card)
+                    x+=1                    
+    #god has not given any card
     elif x=='N':
         if len(l)==0:
             card=""
             previous=[]
+            #correct will b empty
             x=len(correct)
+            #3 correct random cards taken
             while len(previous)<=3:
                 card=card_generator.random_card()
-                correct_wrong(card)
+                correct_wrong(card,flag)
                 if len(correct)>x:
                     l.append(card)
                     previous.append(card)
                     x+=1
-                    
-        elif len(l)!=0:
-            for i in l:
-                correct.append(i)
-                previous.append(i)  
-            x=len(correct)
-            while len(previous)<=3:
-                card=card_generator.random_card()
-                correct_wrong(card)
-                if len(correct)>x:
-                    l.append(card)
-                    previous.append(card)
-                    x+=1
-                    
-        previous2=extraction(previous[0])
-        previous1=extraction(previous[1])
-        current=extraction(previous[2])
-        print "correct",correct
-        for i in range(0,50):
-            comparison = comparator(previous2, previous1, current)
-            print "coma",comparison
-            p1 = probabilityCard(previous2,d)
-            p2 = probabilityCard(previous1,p1)
-            p3 = probabilityCard(current,p2)
-            p = probabilityCompare(comparison, p3)
-            a1 = alternate(previous2, previous1, current)
-            altPos = alternatePos(previous2, previous1, current)
-            print altPos
-            print "prob",p
-            cb=CurrentBestHypothesis.current_best_hypothesis(p,flag,correct)
-            if len(cb)==0:
-                print "We found the above rule! Yayy!"
-                break
-            if len(a1)==0:
-                card = card_generator.card_generator(cb[0],cb[1],correct)
-                print "card",card
-                correct_wrong(card)
-                card1 = extraction(card)
-                previous2 = previous1
-                previous1 = current
-                current = card1
-            else:
-                card=card_generator.card_generator(cb[0],cb[1],correct)#alternate_card_generator.alternateCard(a1)
-                print "card",card
-                correct_wrong(card)
-                card1 = extraction(card)
-                previous2 = previous1
-                previous1 = current
-                current = card1
-            # print "for first three cards"
-            # print comparison
-            # print p
-            """print "count" ,CurrentBestHypothesis.count
-            if CurrentBestHypothesis.count==3:
+    print "scientist correct",correct               
+    previous2=extraction(previous[0])
+    previous1=extraction(previous[1])
+    current=extraction(previous[2])
+    print "correct",correct
+    for i in range(0,50):
+        comparison = comparator(previous2, previous1, current)
+        print "coma",comparison
+        p1 = probabilityCard(previous2,d)
+        p2 = probabilityCard(previous1,p1)
+        p3 = probabilityCard(current,p2)
+        p = probabilityCompare(comparison, p3)
+        a1 = alternate(previous2, previous1, current)
+        altPos = alternatePos(previous2, previous1, current)
+        print altPos
+        print "prob",p
+        cb=CurrentBestHypothesis.current_best_hypothesis(p,flag,correct)
+        if len(cb)==0:
+            print "We found the above rule! Yayy!"
+            break
+        if len(a1)==0:
+            card = card_generator.card_generator(cb[0],cb[1],correct)
+            print "card",card
+            correct_wrong(card,flag)
+            card1 = extraction(card)
+            previous2 = previous1
+            previous1 = current
+            current = card1
+        else:
+            card=card_generator.card_generator(cb[0],cb[1],correct)#alternate_card_generator.alternateCard(a1)
+            print "card",card
+            correct_wrong(card,flag)
+            card1 = extraction(card)
+            previous2 = previous1
+            previous1 = current
+            current = card1
+        # print "for first three cards"
+        # print comparison
+        # print p
+        """print "count" ,CurrentBestHypothesis.count
+        if CurrentBestHypothesis.count==3:
 
-             for field, possible_values in  currentBestHypothesis.iteritems():
-              for a, x in possible_values.iteritems():
-               print "hereeeeee",field, a"""
+         for field, possible_values in  currentBestHypothesis.iteritems():
+          for a, x in possible_values.iteritems():
+           print "hereeeeee",field, a"""
 
 
 
