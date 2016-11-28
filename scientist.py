@@ -3,6 +3,7 @@
 from new_eleusis import *
 #from card_generator import *
 import CurrentBestHypothesis
+import alternate_card_generator
 correct = []
 wrong=[]
 l=['5S','6D','8C']
@@ -341,44 +342,65 @@ def alternate(previous2,previous1,current,comparison):
                     alter[key].append(k)
     return alter
 
-from card_generator import *
+import card_generator
 def main():
+    previous=[]
+    current={}
     if len(l)!=0:
-        previous2 = extraction(l[0])
-        previous1 = extraction(l[1])
-        current = extraction(l[2])
-        correct.append(l[0])
-        correct.append(l[1])
-        correct.append(l[2])
-        print "correct",correct
+        for i in l:
+            correct.append(i)
+            previous.append(i)
+        x=len(correct)
+        while previous.length<=3:
+            card=card_generator({},{})
+            correct_wrong(card)
+            if len(correct)>x:
+                previous.append(card)
+                x+=1    
+    else:
+        card=""
+        previous=[]
+        x=len(correct)
+        while previous.length<=3:
+            card=card_generator({},{})
+            correct_wrong(card)
+            if len(correct)>x:
+                previous.append(card)
+                x+=1    
+    previous2=previous[0]
+    previous1=previous[1]
+    current=previous[2]
+    print "correct",correct
+    for i in range(0,10):
         comparison = comparator(previous2, previous1, current)
         p = probability(previous2, previous1, current, comparison)
+        a1 = alternate(previous2, previous1, current, comparison)
+        cb=CurrentBestHypothesis.current_best_hypothesis(p)
+        if len(a1)==0:
+            card = card_generator.card_generator(cb[0],cb[1])
+            print "card",card
+                correct_wrong(card)
+                card1 = extraction(card)
+                previous2 = previous1
+                previous1 = current
+                current = card1
+            else:
+                card=card_generator.card_generator(cb[0],cb[1])#alternate_card_generator.alternateCard(a1)
+                print "card",card
+                correct_wrong(card)
+                card1 = extraction(card)
+                previous2 = previous1
+                previous1 = current
+                current = card1
         # print "for first three cards"
         # print comparison
         # print p
-        RetCur={}
-        RetCur=CurrentBestHypothesis.current_best_hypothesis(p)
-        print "-------------------------------------",RetCur
-        for i in range(0,10):
-            card = card_generator(RetCur[0],RetCur[1])
-            print "card",card
-            correct_wrong(card)
-            card1 = extraction(card)
-            previous2 = previous1
-            previous1 = current
-            current = card1
-            comparison1 = comparator(previous2, previous1, current)
-            p1 = probability(previous2, previous1, current, comparison)
-            a1 = alternate(previous2, previous1, current, comparison)
-            print p1
-            cb=CurrentBestHypothesis.current_best_hypothesis(p1)
         """print "count" ,CurrentBestHypothesis.count
         if CurrentBestHypothesis.count==3:
 
          for field, possible_values in  currentBestHypothesis.iteritems():
           for a, x in possible_values.iteritems():
            print "hereeeeee",field, a"""
-
 
 
 
