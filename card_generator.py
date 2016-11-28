@@ -1,11 +1,58 @@
 import itertools,random
+import scientist
+import new_eleusis
 avg={'D':0.4,'royal':0.3,'even':0.33}
-high={'R':0.5,'odd':0.6}
+high={'H':0.55,'R':0.5,'odd':0.6}
 visited_rules=[]
+correct=['4H','2D','6H']
+
+def number_to_value(number):
+    """Given the numeric value of a card, returns its "value" name"""
+    values = [None, 'A', '2', '3', '4', '5', '6',
+              '7', '8', '9', '10', 'J', 'Q', 'K']
+    return values[number]
+
+#return less
+def create_less(last_correct[0],even):
+    less=[]
+    for i in range(1,value_to_number(last_correct[0])):
+        #if it is even then generate an even number greater than the previously correct number
+        if even=='Y':
+            if i%2==0:
+                less.append(i)
+        #if it is odd then generate an odd number greater than the previously correct number
+        elif even=='N':
+            if i%2!=0:
+                less.append(i)
+        else:
+            less.append(i)
+    return number_to_value(random.choice(less))
+
+#return greater
+def create_greater(last_correct[0],even):
+    greater=[]
+    for i in range(value_to_number(last_correct[0]),14):
+        #if it is even then generate an even number greater than the previously correct number
+        if even=='Y':
+            if i%2==0:
+                greater.append(i)
+        #if it is odd then generate an odd number greater than the previously correct number
+        elif even=='N':
+            if i%2!=0:
+                greater.append(i)
+        else:
+            greater.append(i)
+    return number_to_value(random.choice(greater))
+
 #return a royal 
 def create_royal():
     royal=['J','Q','K']
     return random.choice(royal)
+
+#return a suit 
+def create_suit():
+    suit=['D','H','C','S']
+    return random.choice(suit)
 
 #return an even number
 def create_even(isroyal):
@@ -64,84 +111,188 @@ def create_black():
 
 #generate the new card   
 def card_generator():
+    last_correct=""
+    last_correct=correct[len(correct)-1]
+    print "last_correct",last_correct,last_correct[0]
+    print "in card generator"
+    print avg,"best",high
+    count=0
+    #to keep a count of how many cards have been generated
+    count+=1
     card=""
     perm = list(itertools.product(avg.keys(), high.keys()))
+    random.shuffle(perm)
     new_card=""
+    
     for i in perm:
         #separating rules from generated permutation
         rule1,rule2=i
-        #if rule1 in visited_rules and rule2
-        if rule1!='even':
-            if rule1!='odd':
-                if rule2!='odd':
-                    if rule2!='even':
-                        #no even or odd rule selected and its not royal
-                        if rule1!='royal' or rule2!='royal':
-                            card+=str(random.randint(1,11))
-                        else:
-                            card+=create_royal()
-                    else:
-                        #second rule is even but first rule is royal
-                        if rule1=='royal':
-                            card+=str(create_even('Y'))
-                        else:
-                            card+=str(create_even('N'))     
-                else:
-                    #second rule is odd but first rule is royal
-                    if rule1=='royal':
-                        card+=str(create_odd('Y'))
-                    else:
-                        card+=str(create_odd('N'))
-            else:
-                #first rule is odd but second rule is royal
-                if rule2=='royal':
-                    card+=str(create_odd('Y'))
-                else:
-                    card+=str(create_odd('N'))
-        else:
-            #first rule is even but second rule is royal
-            if rule2=='royal':
-                card+=str(create_even('Y'))
+        print rule1,rule2
+        visited_rules.append(rule1)
+        visited_rules.append(rule2)
+        
+    #one rule is even       
+        if rule1=='even' or rule2=='even':
+            #second is odd
+            if rule1=='odd' or rule2=='odd':
+               continue
+            #second is royal
+            elif rule1=='royal' or rule2=='royal':
+                card+=str(create_even('Y'))+create_suit()
+                return card
+            #second is minus1 of the previously correct card
+            elif rule1=='minus1' or rule2=='minus1':
+                if (int(last_correct[0])-1)>0:
+                    card+=(number_to_value(int(last_correct[0])-1))+create_suit()
+                    return card
+            #second is plus1 of the previously correct card
+            elif rule1=='plus1' or rule2=='plus1':
+                if (int(last_correct[0])+1)<14:
+                    card+=(number_to_value(int(last_correct[0])+1))+create_suit()
+                    return card
+            #second is less than the previously correct card by any amount
+            elif rule1=='less' or rule2=='less':
+                card+=create_less(last_correct[0],'Y')+create_suit()
+                return card
+            #second is greater than the previously correct card by any amount
+            elif rule1=='greater' or rule2=='greater':
+                card+=create_greater(last_correct[0],'Y')+create_suit()
+                return card
+            #second is either one of the 4 suits or R/B
             else:
                 card+=str(create_even('N'))
-            
+                
+    #one rule is odd
+        if rule1=='odd' or rule2=='odd':
+            #second is even
+            if rule1=='even' or rule2=='even':
+               continue
+            #second is royal
+            elif rule1=='royal' or rule2=='royal':
+                card+=str(create_odd('Y'))+create_suit()
+                return card
+            #second is minus1 of the previously correct card
+            elif rule1=='minus1' or rule2=='minus1':
+                if (int(last_correct[0])-1)>0:
+                    card+=(number_to_value(int(last_correct[0])-1))+create_suit()
+                    return card
+                else:
+                    continue
+            #second is plus1 of the previously correct card
+            elif rule1=='plus1' or rule2=='plus1':
+                if (int(last_correct[0])+1)<14:
+                    card+=(number_to_value(int(last_correct[0])+1))+create_suit()
+                    return card
+                else:
+                    continue
+            #second is less than the previously correct card by any amount
+            elif rule1=='less' or rule2=='less':
+                card+=create_less(last_correct[0],'N')+create_suit()
+                return card
+            #second is greater than the previously correct card by any amount
+            elif rule1=='greater' or rule2=='greater':
+                card+=create_greater(last_correct[0],'N')+create_suit()
+                return card
+            #second is either one of the 4 suits or R/B
+            else:
+                card+=str(create_odd('N'))
+                
     #one rule is royal
-        if rule1=='royal' or rule2=='royal':
-            #second rule is 
-            card+=create_royal()
+        if rule1!='even' or rule1!='odd' or rule2!='even' or rule2!='odd':
+            if rule1=='royal' or rule2=='royal':
+                if rule1=='less' or rule2=='less':
+                    card+=create_less(last_correct[0],'R')
             
     #one rule is diamond
         if rule1=='D' or rule2=='D':
             #second is black
             if rule1=='B' or rule2=='B':
                 continue
-            else:
+            #second is hearts
+            elif rule1=='H' or rule2=='H':
+                print "here"
+                continue
+            #second is spade
+            elif rule1=='S' or rule2=='S':
+                continue
+            #second is club
+            elif rule1=='C' or rule2=='C':
+                continue
+            #second is red
+            elif rule1=='R' or rule2=='R':
+                card=card+str(random.randint(1,11))+'D'
+                return card
+            #second is either even,odd or royal
+            elif rule1=='even' or rule2=='even' or rule1=='odd' or rule2=='odd' or rule1=='royal' or rule2=='royal':
                 card+='D'
+                return card
+
 
     #one rule is heart
         if rule1=='H' or rule2=='H':
             #second is black
             if rule1=='B' or rule2=='B':
                 continue
-            else:
+            elif rule1=='D' or rule2=='D':
+                continue
+            elif rule1=='S' or rule2=='S':
+                continue
+            elif rule1=='C' or rule2=='C':
+                continue
+            elif rule1=='R' or rule2=='R':
+                card=card+str(random.randint(1,11))+'H'
+                return card
+            elif rule1=='even' or rule2=='even' or rule1=='odd' or rule2=='odd' or rule1=='royal' or rule2=='royal':
                 card+='H'
+                return card
 
     #one rule is spade
         if rule1=='S' or rule2=='S':
-            #second is red
+           #second is red
             if rule1=='R' or rule2=='R':
                 continue
-            else:
+            #second is diamond
+            elif rule1=='D' or rule2=='D':
+                continue
+            #second is clubs
+            elif rule1=='C' or rule2=='C':
+                continue
+            #second is hearts
+            elif rule1=='H' or rule2=='H':
+                continue
+            #second is black
+            elif rule1=='B' or rule2=='B':
+                card=card+str(random.randint(1,11))+'S'
+                return card
+            #second is either even,odd or royal
+            elif rule1=='even' or rule2=='even' or rule1=='odd' or rule2=='odd' or rule1=='royal' or rule2=='royal':
                 card+='S'
+                return card
 
     #one rule is club
         if rule1=='C' or rule2=='C':
             #second is red
             if rule1=='R' or rule2=='R':
                 continue
-            else:
+            #second is diamond
+            elif rule1=='D' or rule2=='D':
+                continue
+            #second is spade
+            elif rule1=='S' or rule2=='S':
+                continue
+            #second is hearts
+            elif rule1=='H' or rule2=='H':
+                continue
+            #second is black
+            elif rule1=='B' or rule2=='B':
+                card=card+str(random.randint(1,11))+'C'
+                return card
+            #second is either even,odd or royal
+            elif rule1=='even' or rule2=='even' or rule1=='odd' or rule2=='odd' or rule1=='royal' or rule2=='royal':
                 card+='C'
-       
+                return card
+
+            
     #one rule is red
         if rule1=='R' or rule2=='R':
             #other one is black
@@ -151,6 +302,7 @@ def card_generator():
             else:
                 #for the case when any one of them is red
                 card+=create_red()
+                return card
 
     #one rule is black
         if rule1=='B' or rule2=='B':
@@ -160,7 +312,6 @@ def card_generator():
                 continue
             else:
                 #case when one of them is black
-                card+=create_black()                
-        return card
-    
-print card_generator()
+                card+=create_black()
+                return card
+card_generator()
