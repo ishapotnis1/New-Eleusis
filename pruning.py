@@ -1,6 +1,6 @@
 from scientist import *
-f={'is_color':['R','R'],'is_value':['even','greater','plus1','even'],'is_suit':['S','H']}
-correct=['10S','8S','6H','4D','2C']
+f={'is_color':['R','R'],'is_value':['even','greater','plus1','even'],'is_suit':['S','H']}  #sample outcput from current best hypothesis
+correct=['10S','8S','6H','4D','2C']  #sample correct list
 
 def pruning(hypothesis):
     k=hypothesis
