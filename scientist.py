@@ -85,7 +85,8 @@ def extraction(card):
     hypothesis[rules[9]]=value1
     hypothesis[rules[10]]=card
 
-    return hypothesis           
+    return hypothesis
+
 #less than 3 rule pending
 def comparator(previous2,previous1,current):
     rules=['less','greater','plus1','minus1']
@@ -99,14 +100,26 @@ def comparator(previous2,previous1,current):
         hypothesis[rules[1]] = 1
     else:
         hypothesis[rules[1]] = 0
-    if(plus1(previous2['card'])== previous1['card'] and plus1(previous1['card']) == current['card']):
-        hypothesis[rules[2]] = 1
+    if (previous2['value']+1<14 and previous1['value']+1<14):
+        print "plus1"
+        if(plus1(previous2['card'])== previous1['card'] and plus1(previous1['card']) == current['card']):
+            print "plus1 2"
+            hypothesis[rules[2]] = 1
+        else:
+            hypothesis[rules[2]] = 0
     else:
         hypothesis[rules[2]] = 0
-    if(minus1(previous2['card']) == previous1['card'] and minus1(previous1['card']) == current['card']):
-        hypothesis[rules[3]] = 1
+    if (previous2['value']-1>0 and previous1['value']-1>0):
+        print "fi"
+        if(minus1(previous2['card']) == previous1['card'] and minus1(previous1['card']) == current['card']):
+            print"fi1"
+            hypothesis[rules[3]] = 1
+        else:
+            hypothesis[rules[3]] = 0
+
     else:
         hypothesis[rules[3]] = 0
+    
     return hypothesis
 
 def probability(previous2,previous1,current,comparison):
@@ -147,9 +160,6 @@ def probability(previous2,previous1,current,comparison):
         # count_suit+=1
     if(previous2['B']==0):
         d['is_color']['B']=d['is_color']['B']-0.005    
-        
-
-
 
     #previous1
     if(previous1['D']==1):
@@ -186,8 +196,6 @@ def probability(previous2,previous1,current,comparison):
         # count_suit+=1
     if(previous1['B']==0):
         d['is_color']['B']=d['is_color']['B']-0.005
-
-
 
     #current
     if(current['D']==1):
@@ -296,10 +304,6 @@ def probability(previous2,previous1,current,comparison):
         d['is_value']['less'] = d['is_value']['less'] - ((0.005)/18)
         d['is_value']['even'] = d['is_value']['even'] - ((0.005)/18)
         d['is_value']['royal'] = d['is_value']['royal'] - ((0.005)/18)
-
-
-
-
 
     if(current['odd'] == 1):
         d['is_value']['odd'] = d['is_value']['odd'] + (0.005/3)
@@ -472,7 +476,6 @@ import card_generator
 def main():
     d = {'is_suit':{'D':0.25,'H':0.25,'S':0.25,'C':0.25},'is_value':{'even':0.14,'odd':0.14,'royal':0.14,'less':0.14,'greater':0.14,'plus1':0.14,'minus1':0.14},'is_color':{'R':0.5,'B':0.5}}
     previous=[]
-    previous
     current={}
     x=raw_input("Is the God entering any cards?(Y/N)")
     if(x=='Y'):
@@ -511,8 +514,9 @@ def main():
         previous1=extraction(previous[1])
         current=extraction(previous[2])
         print "correct",correct
-        for i in range(0,10):
+        for i in range(0,50):
             comparison = comparator(previous2, previous1, current)
+            print "coma",comparison
             p1 = probabilityCard(previous2,d)
             p2 = probabilityCard(previous1,p1)
             p3 = probabilityCard(current,p2)
@@ -521,12 +525,12 @@ def main():
             altPos = alternatePos(previous2, previous1, current)
             print altPos
             print "prob",p
-            cb=CurrentBestHypothesis.current_best_hypothesis(p)
+            cb=CurrentBestHypothesis.current_best_hypothesis(p,flag,correct)
             if len(cb)==0:
                 print "We found the above rule! Yayy!"
                 break
             if len(a1)==0:
-                card = card_generator.card_generator(cb[0],cb[1])
+                card = card_generator.card_generator(cb[0],cb[1],correct)
                 print "card",card
                 correct_wrong(card)
                 card1 = extraction(card)
@@ -534,7 +538,7 @@ def main():
                 previous1 = current
                 current = card1
             else:
-                card=card_generator.card_generator(cb[0],cb[1])#alternate_card_generator.alternateCard(a1)
+                card=card_generator.card_generator(cb[0],cb[1],correct)#alternate_card_generator.alternateCard(a1)
                 print "card",card
                 correct_wrong(card)
                 card1 = extraction(card)

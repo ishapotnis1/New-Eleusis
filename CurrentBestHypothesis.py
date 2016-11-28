@@ -9,7 +9,7 @@ currentBestHypothesis={}
 forvalidation={}
 threshold=0.0
 
-def pruning(hypothesis):
+def pruning(hypothesis,correct):
         k=hypothesis
         w=len(k)
         h=k.keys()
@@ -32,7 +32,6 @@ def pruning(hypothesis):
         hypo=h1+h2+h3
         #return hypo
         #print hypo
-        correct=scientist.correct
         print "correct list"
         print correct
         f=[]
@@ -88,12 +87,12 @@ def pruning(hypothesis):
         best=final+final1
         return best
 
-def current_best_hypothesis(hypothesis):
+def current_best_hypothesis(hypothesis,flag,correct):
         temp={}
 	tempconstraints={}
 	tempValidation={}
-	if scientist.correct_wrong.flag==20:
-                w=pruning(currentBestHypothesis)
+	if flag==20:
+                w=pruning(currentBestHypothesis,correct)
                 print w
                 return
         else:

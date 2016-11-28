@@ -6,10 +6,6 @@ import new_eleusis
 visited_rules=[]
 print "hjashjbdh",scientist.correct
 #correct=['4H','2D','6H']
-last_correct=""
-if len(scientist.correct)!=0:
-    last_correct=scientist.correct[len(scientist.correct)-1]
-    print last_correct
 def number_to_value(number):
     """Given the numeric value of a card, returns its "value" name"""
     values = [None, 'A', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K']
@@ -18,7 +14,10 @@ def number_to_value(number):
 def value_to_number(name):
     """Given the "value" part of a card, returns its numeric value"""
     values = [None, 'A', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K']
-    return values.index(str(name))
+    if name=='1':
+        return values.index('A')
+    else:
+        return values.index(str(name))
 
 #return less
 def create_less(num,even):
@@ -59,7 +58,7 @@ def create_greater(num,even):
                 greater.append(i)
         #any number greater than the previous correct number
         else:
-            less.append(i)
+            greater.append(i)
     return number_to_value(random.choice(greater))
 
 #return a royal 
@@ -130,7 +129,7 @@ def create_black(avg,high):
         return 'C'
 
 #manipulation on rules selected
-def check(rule1,rule2,avg,high):
+def check(rule1,rule2,avg,high,last_correct):
     card=""
     #one rule is even       
     if rule1=='even' or rule2=='even':
@@ -205,20 +204,20 @@ def check(rule1,rule2,avg,high):
             #second is less than the previous correct card
             if rule1=='less' or rule2=='less':
                 if len(last_correct)!=0:
-                    card+=create_less(value_to_number(int(last_correct[0])),'R')
+                    card+=create_less(value_to_number(number_to_value(int(last_correct[0]))),'R')
                 else:
                     return ""
             #second is greater than the previous correct card
             elif rule1=='greater' or rule2=='greater':
                 if len(last_correct)!=0:
-                    card+=create_greater(value_to_number(int(last_correct[0])),'R')
+                    card+=create_greater(value_to_number(number_to_value(int(last_correct[0]))),'R')
                 else:
                     return ""
             #second is one greater than the previous correct card
             elif rule1=='plus1' or rule2=='plus1':
                 if len(last_correct)!=0:
                     print int(last_correct[0])+1
-                    if (value_to_number(int(last_correct[0])+1))<14:
+                    if (value_to_number(number_to_value(int(last_correct[0])+1)))<14:
                         card+=number_to_value(value_to_number(int(last_correct[0])+1))+create_suit()
                         return card
                     else:
@@ -474,7 +473,7 @@ def check(rule1,rule2,avg,high):
         #when second card is one greater than the previous correct card
         elif rule1=='plus1' or rule2=='plus1':
             if len(last_correct)!=0:
-                if (value_to_number(int(last_correct[0]))+1)<14:
+                if (value_to_number(number_to_value(int(last_correct[0])))+1)<14:
                     card+=number_to_value(value_to_number(int(last_correct[0]))+1)+create_red(avg,high)
                     return card
                 else:
@@ -484,7 +483,7 @@ def check(rule1,rule2,avg,high):
         #when second card is one less than the previous correct card
         elif rule1=='minus1' or rule2=='minus1':
             if len(last_correct)!=0:
-                if (value_to_number(int(last_correct[0]))-1)>0:
+                if (value_to_number(number_to_value(int(last_correct[0])))-1)>0:
                     card+=number_to_value((value_to_number(int(last_correct[0]))-1))+create_red(avg,high)
                     return card
                 else:
@@ -515,7 +514,7 @@ def check(rule1,rule2,avg,high):
         #when second card is one greater than the previous correct card
         elif rule1=='plus1' or rule2=='plus1':
             if len(last_correct)!=0:
-                if (value_to_number(int(last_correct[0]))+1)<14:
+                if (value_to_number(number_to_value(int(last_correct[0])))+1)<14:
                     card+=number_to_value(value_to_number(int(last_correct[0]))+1)+create_black(avg,high)
                     return card
                 else:
@@ -525,8 +524,8 @@ def check(rule1,rule2,avg,high):
         #when second card is one less than the previous correct card
         elif rule1=='minus1' or rule2=='minus1':
             if len(last_correct)!=0:
-                if (value_to_number(int(last_correct[0]))-1)>0:
-                    card+=number_to_value((value_to_number(int(last_correct[0]))-1))+create_black(avg,high)
+                if (value_to_number(number_to_value(int(last_correct[0])))-1)>0:
+                    card+=number_to_value(value_to_number((number_to_value(int(last_correct[0])-1))))+create_black(avg,high)
                     return card
                 else:
                     return ""
@@ -548,8 +547,8 @@ def check(rule1,rule2,avg,high):
         #second is one less than the previous correct card
         elif rule1=='minus1' or rule2=='minus1':
             if len(last_correct)!=0:
-                if (value_to_number(int(last_correct[0]))-1)>0:
-                    card+=number_to_value((value_to_number(int(last_correct[0]))-1))+create_suit()
+                if (value_to_number(number_to_value(int(last_correct[0])-1)))>0:
+                    card+=number_to_value((value_to_number(number_to_value(int(last_correct[0])-1))))+create_suit()
                     return card
                 else:
                     return ""
@@ -570,8 +569,8 @@ def check(rule1,rule2,avg,high):
         #second is one greater than the previous correct so this dominates
         if rule1=='plus1' or rule2=='plus1':
             if len(last_correct)!=0:
-                if (value_to_number(int(last_correct[0]))+1)<14:
-                    card+=number_to_value(value_to_number(int(last_correct[0]))+1)+create_suit()
+                if (value_to_number(number_to_value(int(last_correct[0]))+1))<14:
+                    card+=number_to_value(value_to_number(number_to_value(int(last_correct[0]))+1))+create_suit()
                     return card
                 else:
                     return ""
@@ -580,8 +579,12 @@ def check(rule1,rule2,avg,high):
    
 
 #generate the new card   
-def card_generator(avg,high):
+def card_generator(avg,high,correct):
     print "in card generator"
+    last_correct=""
+    if len(correct)!=0:
+        last_correct=correct[len(correct)-1]
+    print "last_correct",last_correct
     count=0
     #to keep a count of how many cards have been generated
     count+=1
@@ -594,7 +597,7 @@ def card_generator(avg,high):
             #separating rules from generated permutation
             rule1,rule2=i
             print rule1,rule2
-            card=check(rule1,rule2)
+            card=check(rule1,rule2,avg,high,last_correct)
             if card=="":
                 continue
             else:
@@ -616,7 +619,7 @@ def card_generator(avg,high):
                 print rule1,rule2
                 if rule1==rule2:
                     continue
-                card=check(rule1,rule2,avg,high)
+                card=check(rule1,rule2,avg,high,last_correct)
                 if card=="":
                     continue
                 else:
@@ -636,12 +639,14 @@ def card_generator(avg,high):
                 print rule1,rule2
                 if rule1==rule2:
                     continue
-                card=check(rule1,rule2,avg,high)
+                card=check(rule1,rule2,avg,high,last_correct)
                 if card=="":
                     continue
                 else:
                     return card
-    else:
-        card=""
-        card+=number_to_value(random.randint(1,11))+create_suit()
-        return card
+                
+def random_card():
+    card=""
+    card+=number_to_value(random.randint(1,11))+create_suit()
+    print card
+    return card
