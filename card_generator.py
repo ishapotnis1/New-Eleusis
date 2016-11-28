@@ -344,7 +344,7 @@ def check(rule1,rule2,avg,high,last_correct):
         elif rule1=='minus1' or rule2=='minus1':
             if len(last_correct)!=0:
                 if (value_to_number(last_correct[0])-1)>0:
-                    card+=(value_to_number(last_correct[0])-1)+'H'
+                    card+=number_to_value(value_to_number(last_correct[0])-1)+'H'
                     return card
                 else:
                     return ""
