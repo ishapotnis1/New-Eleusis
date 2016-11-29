@@ -4,7 +4,6 @@ import new_eleusis
 #avg={}#'D':0.4,'royal':0.3,'even':0.33,'less':0.44}
 #high={'H':0.55,'R':0.5,'odd':0.6,'plus1':0.56}
 visited_rules=[]
-print "hjashjbdh",scientist.correct
 #correct=['4H','2D','6H']
 def number_to_value(number):
     """Given the numeric value of a card, returns its "value" name"""
@@ -47,6 +46,7 @@ def create_less(num,even):
 #return greater
 def create_greater(num,even):
     greater=[]
+    print "gr",num
     for i in range(value_to_number(num),14):
         #if it is even then generate an even number greater than the previously correct number
         if even=='Y':
@@ -157,8 +157,9 @@ def check(rule1,rule2,avg,high,last_correct):
         #second is less than the previously correct card by any amount
         elif rule1=='less' or rule2=='less':
             if len(last_correct)!=0:
-				if create_less(last_correct[0],'Y')!="":
-					card+=create_less(last_correct[0],'Y')+create_suit()
+				x=create_less(last_correct[0],'Y')
+				if x!="":
+					card+=x+create_suit()
 					return card
 				else:
 					return ""
@@ -167,8 +168,9 @@ def check(rule1,rule2,avg,high,last_correct):
         #second is greater than the previously correct card by any amount
         elif rule1=='greater' or rule2=='greater':
             if len(last_correct)!=0:
-				if create_greater(last_correct[0],'Y')!="":
-					card+=create_greater(last_correct[0],'Y')+create_suit()
+				x=create_greater(last_correct[0],'Y')
+				if x!="":
+					card+=x+create_suit()
 					return card
 				else:
 					return ""
@@ -197,8 +199,9 @@ def check(rule1,rule2,avg,high,last_correct):
         #second is less than the previously correct card by any amount
         elif rule1=='less' or rule2=='less':
             if len(last_correct)!=0:
-				if create_less(last_correct[0],'N')!="":
-					card+=create_less(last_correct[0],'N')+create_suit()
+				x=create_less(last_correct[0],'N')
+				if x!="":
+					card+=x+create_suit()
 					return card
 				else:
 					return ""
@@ -207,8 +210,9 @@ def check(rule1,rule2,avg,high,last_correct):
         #second is greater than the previously correct card by any amount
         elif rule1=='greater' or rule2=='greater':
             if len(last_correct)!=0:
-				if create_greater(last_correct[0],'N')!="":
-					card+=create_greater(last_correct[0],'N')+create_suit()
+				x=create_greater(last_correct[0],'N')
+				if x!="":
+					card+=x+create_suit()
 					return card
 				else:
 					return ""
@@ -224,8 +228,10 @@ def check(rule1,rule2,avg,high,last_correct):
             #second is less than the previous correct card
             if rule1=='less' or rule2=='less':
                 if len(last_correct)!=0:
-					if create_less(last_correct[0],'R')!="":
-						card+=create_less(last_correct[0],'R')
+					x=create_less(last_correct[0],'R')
+					if x!="":
+						card+=x+create_suit()
+						return card
 					else:
 						return ""
                 else:
@@ -233,8 +239,11 @@ def check(rule1,rule2,avg,high,last_correct):
             #second is greater than the previous correct card
             elif rule1=='greater' or rule2=='greater':
                 if len(last_correct)!=0:
-					if create_greater(last_correct[0],'R')!=0:
-						card+=create_greater(last_correct[0],'R')
+					x=create_greater(last_correct[0],'R')
+					print x
+					if x!=0:
+						card+=x+create_suit()
+						return card
 					else:
 						return ""
                 else:
@@ -292,8 +301,9 @@ def check(rule1,rule2,avg,high,last_correct):
         #second is less than the previous correct card
         elif rule1=='less' or rule2=='less':
             if len(last_correct)!=0:
-				if create_less(last_correct[0],'E')!="":
-					card+=create_less(last_correct[0],'E')+'D'
+				x=create_less(last_correct[0],'E')
+				if x!="":
+					card+=x+'D'
 					return card
 				else:
 					return ""
@@ -302,8 +312,9 @@ def check(rule1,rule2,avg,high,last_correct):
         #second is greater than the previous correct card
         elif rule1=='greater' or rule2=='greater':
             if len(last_correct)!=0:
-				if create_greater(last_correct[0],'E')!=0:
-					card+=create_greater(last_correct[0],'E')+'D'
+				x=create_greater(last_correct[0],'E')
+				if x!=0:
+					card+=x+'D'
 					return card
 				else:
 					return ""
@@ -351,8 +362,9 @@ def check(rule1,rule2,avg,high,last_correct):
         #second is less than the previous correct card
         elif rule1=='less' or rule2=='less':
             if len(last_correct)!=0:
-				if create_less(last_correct[0],'E')!="":
-					card+=create_less(last_correct[0],'E')+'H'
+				x=create_less(last_correct[0],'E')
+				if x!="":
+					card+=x+'H'
 					return card
 				else:
 					return ""
@@ -361,8 +373,9 @@ def check(rule1,rule2,avg,high,last_correct):
         #second is greater than the previous correct card
         elif rule1=='greater' or rule2=='greater':
             if len(last_correct)!=0:
-				if create_greater(last_correct[0],'E')!="":
-					card+=create_greater(last_correct[0],'E')+'H'
+				x=create_greater(last_correct[0],'E')
+				if x!="":
+					card+=x+'H'
 					return card
 				else:
 					return ""
@@ -408,8 +421,9 @@ def check(rule1,rule2,avg,high,last_correct):
         #second is less than the previous correct card
         elif rule1=='less' or rule2=='less':
             if len(last_correct)!=0:
-				if create_less(last_correct[0],'E')!="":
-					card+=create_less(last_correct[0],'E')+'S'
+				x=create_less(last_correct[0],'E')
+				if x!="":
+					card+=x+'S'
 					return card
 				else:
 					return ""
@@ -418,8 +432,9 @@ def check(rule1,rule2,avg,high,last_correct):
         #second is greater than the previous correct card
         elif rule1=='greater' or rule2=='greater':
             if len(last_correct)!=0:
-				if create_greater(last_correct[0],'E')!="":
-					card+=create_greater(last_correct[0],'E')+'S'
+				x=create_greater(last_correct[0],'E')
+				if x!="":
+					card+=x+'S'
 					return card
 				else:
 					return ""
@@ -462,8 +477,9 @@ def check(rule1,rule2,avg,high,last_correct):
         #second is less than the previous correct card
         elif rule1=='less' or rule2=='less':
             if len(last_correct)!=0:
-				if create_less(last_correct[0],'E')!="":
-					card+=create_less(last_correct[0],'E')+'C'
+				x=create_less(last_correct[0],'E')
+				if x!="":
+					card+=x+'C'
 					return card
 				else:
 					return ""
@@ -472,8 +488,9 @@ def check(rule1,rule2,avg,high,last_correct):
         #second is greater than the previous correct card
         elif rule1=='greater' or rule2=='greater':
             if len(last_correct)!=0:
-				if create_greater(last_correct[0],'E')!="":
-					card+=create_greater(last_correct[0],'E')+'C'
+				x=create_greater(last_correct[0],'E')
+				if x!="":
+					card+=x+'C'
 					return card
 				else:
 					return ""
@@ -509,8 +526,9 @@ def check(rule1,rule2,avg,high,last_correct):
         #when second card is less than the previous correct card
         elif rule1=='less' or rule2=='less':
             if len(last_correct)!=0:
-				if create_less(last_correct[0],'E')!="":
-					card+=create_less(last_correct[0],'E')+create_red(avg,high)
+				x=create_less(last_correct[0],'E')
+				if x!="":
+					card+=x+create_red(avg,high)
 					return card
 				else:
 					return ""
@@ -519,8 +537,9 @@ def check(rule1,rule2,avg,high,last_correct):
         #when second card is greater than the previous correct card
         elif rule1=='greater' or rule2=='greater':
             if len(last_correct)!=0:
-				if create_greater(last_correct[0],'E')!="":
-					card+=create_greater(last_correct[0],'E')+create_red(avg,high)
+				x=create_greater(last_correct[0],'E')
+				if x!="":
+					card+=x+create_red(avg,high)
 					return card
 				else:
 					return ""
@@ -556,8 +575,9 @@ def check(rule1,rule2,avg,high,last_correct):
         #when second card is less than the previous correct card
         if rule1=='less' or rule2=='less':
             if len(last_correct)!=0:
-				if create_less(last_correct[0],'E')!="":
-					card+=create_less(last_correct[0],'E')+create_black(avg,high)
+				x=create_less(last_correct[0],'E')
+				if x!="":
+					card+=x+create_black(avg,high)
 					return card
 				else:
 					return ""
@@ -566,8 +586,9 @@ def check(rule1,rule2,avg,high,last_correct):
         #when second card is greater than the previous correct card
         elif rule1=='greater' or rule2=='greater':
             if len(last_correct)!=0:
-				if create_greater(last_correct[0],'E')!="":
-					card+=create_greater(last_correct[0],'E')+create_black(avg,high)
+				x=create_greater(last_correct[0],'E')
+				if x!="":
+					card+=x+create_black(avg,high)
 					return card
 				else:
 					return ""
