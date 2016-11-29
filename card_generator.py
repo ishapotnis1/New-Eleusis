@@ -39,7 +39,7 @@ def create_less(num,even):
         else:
             less.append(i)
     if len(less)>0:
-		print less
+	print less
         return number_to_value(random.choice(less))
     else:
         return ""
@@ -64,7 +64,7 @@ def create_greater(num,even):
         else:
             greater.append(i)
     if len(greater)>0:
-		print greater
+	print greater
         return number_to_value(random.choice(greater))
     else:
         return ""
