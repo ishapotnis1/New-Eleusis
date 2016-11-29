@@ -272,11 +272,9 @@ def main():
             correct.append(i)
         if len(previous)<3:
             x=len(correct)
-            print "yes god card random"
             while len(previous)!=3:
                 card=card_generator.random_card()
                 flag=correct_wrong(card,flag,scoring)            
-                print "BoardState",boardState()
                 if len(correct)>x:
                     l.append(card)
                     previous.append(card)
@@ -289,7 +287,6 @@ def main():
             #correct will b empty
             x=len(correct)
             #3 correct random cards taken
-            print "no god card random"
             while len(previous)<=3:
                 card=card_generator.random_card()
                 flag=correct_wrong(card,flag,scoring)
@@ -316,7 +313,7 @@ def main():
         altPos = alternatePos(previous2, previous1, current)
         s=setRule(p,a1)
         print "setrule",s
-        cb=CurrentBestHypothesis.scientist(p,flag,correct,a1,count_iter)#changes made here
+        cb=CurrentBestHypothesis.scientist(p,flag,correct,a1,count_iter)
         if len(cb)==0:
             print "We found the above rule! Yayy!"
             print "BoardState",boardState()
@@ -334,7 +331,7 @@ def main():
             previous1 = current
             current = card1
         else:
-            card=alternateCardGen.alternateCard(correct)#alternate_card_generator.alternateCard(a1)
+            card=alternateCardGen.alternateCard(correct)
             print "card",card
             flag=correct_wrong(card,flag,scoring)
             card1 = extraction(card)
