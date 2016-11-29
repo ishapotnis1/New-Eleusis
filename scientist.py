@@ -1,7 +1,4 @@
-#alternate
-#AND_OR    
 from new_eleusis import *
-#from card_generator import *
 import CurrentBestHypothesis
 import alternateCardGen
 global correct
@@ -10,22 +7,20 @@ global wrong
 wrong=[]
 global current
 current={}
-l=[]#'4H','6D','8H']
+l=[]
 global board_list
 board_list=[]
 wrong_board=[]
 global alter
 alter = {}
 prevres=None
-flag=0
-scoring = 0
 
 def score(scoring, number):
    scoring = scoring + number
    return scoring
 
 
-def correct_wrong(card,flag):
+def correct_wrong(card,flag,scoring):
     x=raw_input("Press 'Y' if card is correct |  Press 'N' if card is wrong")
     tuple1=()
     list1=[]
@@ -41,25 +36,25 @@ def correct_wrong(card,flag):
         board_list.append(tuple1)
         correct.append(card)
         if flag > 20 and flag < 200 :
-           scoring == score(scoring ,1)
+           scoring = score(scoring ,1)
     else:
         flag=0
         wrong.append(card)
         wrong_board.append(card)
-        scoring == score(scoring ,2)
-
-
-
+        scoring = score(scoring ,2)
+        return flag
+            
+			
 def setRule(rule,alternate_rule):
     return rule,alternate_rule
 
 def score():
     
     return score
-
+			   
 def extraction(card):
     value1=value(card)
-    rules=['D','H','S','C','even','odd','royal','R','B','value','card']#'less','greater','plus1','minus1','R','B']
+    rules=['D','H','S','C','even','odd','royal','R','B','value','card']
     #updating rules dictionary
     hypothesis={}
     if(suit(card)=='D'):
@@ -139,234 +134,6 @@ def comparator(previous2,previous1,current):
     
     return hypothesis
 
-def probability(previous2,previous1,current,comparison):
-    d = {'is_suit':{'D':0.25,'H':0.25,'S':0.25,'C':0.25},'is_value':{'even':0.14,'odd':0.14,'royal':0.14,'less':0.14,'greater':0.14,'plus1':0.14,'minus1':0.14},'is_color':{'R':0.5,'B':0.5}}
-
-    #previous2
-    if(previous2['D']==1):
-        d['is_suit']['D']+=0.005
-    if(previous2['D']==0):
-        d['is_suit']['D']=d['is_suit']['D']-(0.005/(3))
-                                                     
-    if(previous2['H']==1):
-        d['is_suit']['H']+=0.005
-    if(previous2['H']==0):
-        d['is_suit']['H']=d['is_suit']['H']-(0.005/(3))
-
-    if(previous2['S']==1):
-        d['is_suit']['S']+=0.005
-        #count_suit+=1
-    if(previous2['S']==0):
-        d['is_suit']['S']=d['is_suit']['S']-(0.005/(3))
-
-    if(previous2['C']==1):
-        d['is_suit']['C']+=0.005
-        #count_suit+=1
-    if(previous2['C']==0):
-        d['is_suit']['C']=d['is_suit']['C']-(0.005/(3))
-                                                         
-    if(previous2['R']==1):
-        d['is_color']['R']+=0.005
-        # count_suit+=1
-    if(previous2['R']==0):
-        d['is_color']['R']=d['is_color']['R']-0.005
-
-    if(previous2['B']==1):
-        d['is_color']['R']+=0.005
-        # count_suit+=1
-    if(previous2['B']==0):
-        d['is_color']['B']=d['is_color']['B']-0.005    
-
-    #previous1
-    if(previous1['D']==1):
-        d['is_suit']['D']+=0.005
-    if(previous1['D']==0):
-        d['is_suit']['D']=d['is_suit']['D']-(0.005/(3))
-                                                     
-    if(previous1['H']==1):
-        d['is_suit']['H']+=0.005
-        #count_suit+=1
-    if(previous1['H']==0):
-        d['is_suit']['H']=d['is_suit']['H']-(0.005/(3))
-
-    if(previous1['S']==1):
-        d['is_suit']['S']+=0.005
-        #count_suit+=1
-    if(previous1['S']==0):
-        d['is_suit']['S']=d['is_suit']['S']-(0.005/(3))
-
-    if(previous1['C']==1):
-        d['is_suit']['C']+=0.005
-        #count_suit+=1
-    if(previous1['C']==0):
-        d['is_suit']['C']=d['is_suit']['C']-(0.005/(3))
-                                                         
-    if(previous1['R']==1):
-        d['is_color']['R']+=0.005
-        # count_suit+=1
-    if(previous1['R']==0):
-        d['is_color']['R']=d['is_color']['R']-0.005
-
-    if(previous1['B']==1):
-        d['is_color']['R']+=0.005
-        # count_suit+=1
-    if(previous1['B']==0):
-        d['is_color']['B']=d['is_color']['B']-0.005
-
-    #current
-    if(current['D']==1):
-        d['is_suit']['D']+=0.005
-    if(current['D']==0):
-        d['is_suit']['D']=d['is_suit']['D']-(0.005/(3))
-                                                     
-    if(current['H']==1):
-        d['is_suit']['H']+=0.005
-        #count_suit+=1
-    if(current['H']==0):
-        d['is_suit']['H']=d['is_suit']['H']-(0.005/(3))
-
-    if(current['S']==1):
-        d['is_suit']['S']+=0.005
-        #count_suit+=1
-    if(current['S']==0):
-        d['is_suit']['S']=d['is_suit']['S']-(0.005/(3))
-
-    if(current['C']==1):
-        d['is_suit']['C']+=0.005
-        #count_suit+=1
-    if(current['C']==0):
-        d['is_suit']['C']=d['is_suit']['C']-(0.005/(3))
-                                                         
-    if(current['R']==1):
-        d['is_color']['R']+=0.005
-        # count_suit+=1
-    if(current['R']==0):
-        d['is_color']['R']=d['is_color']['R']-0.005
-
-    if(current['B']==1):
-        d['is_color']['R']+=0.005
-        # count_suit+=1
-    if(current['B']==0):
-        d['is_color']['B']=d['is_color']['B']-0.005
-
-    if(previous2['even'] == 1):
-        d['is_value']['even'] = d['is_value']['even'] + (0.005/3)
-        d['is_value']['greater'] = d['is_value']['greater'] - ((0.005)/18)
-        d['is_value']['plus1'] = d['is_value']['plus1'] - ((0.005)/18)
-        d['is_value']['minus1'] = d['is_value']['minus1'] - ((0.005)/18)
-        d['is_value']['less'] = d['is_value']['less'] - ((0.005)/18)
-        d['is_value']['odd'] = d['is_value']['odd'] - ((0.005)/18)
-        d['is_value']['royal'] = d['is_value']['royal'] - ((0.005)/18)
-        
-    if(previous1['even'] == 1):
-        d['is_value']['even'] = d['is_value']['even'] + (0.005/3)
-        d['is_value']['greater'] = d['is_value']['greater'] - ((0.005)/18)
-        d['is_value']['plus1'] = d['is_value']['plus1'] - ((0.005)/18)
-        d['is_value']['minus1'] = d['is_value']['minus1'] - ((0.005)/18)
-        d['is_value']['less'] = d['is_value']['less'] - ((0.005)/18)
-        d['is_value']['odd'] = d['is_value']['odd'] - ((0.005)/18)
-        d['is_value']['royal'] = d['is_value']['royal'] - ((0.005)/18)
-        
-    if(current['even'] == 1):
-        d['is_value']['even'] = d['is_value']['even'] + (0.005/3)
-        d['is_value']['greater'] = d['is_value']['greater'] - ((0.005)/18)
-        d['is_value']['plus1'] = d['is_value']['plus1'] - ((0.005)/18)
-        d['is_value']['minus1'] = d['is_value']['minus1'] - ((0.005)/18)
-        d['is_value']['less'] = d['is_value']['less'] - ((0.005)/18)
-        d['is_value']['odd'] = d['is_value']['odd'] - ((0.005)/18)
-        d['is_value']['royal'] = d['is_value']['royal'] - ((0.005)/18)
-        
-    if(previous2['royal'] == 1):
-        d['is_value']['royal'] = d['is_value']['royal'] + (0.005/3)
-        d['is_value']['greater'] = d['is_value']['greater'] - ((0.005)/18)
-        d['is_value']['plus1'] = d['is_value']['plus1'] - ((0.005)/18)
-        d['is_value']['minus1'] = d['is_value']['minus1'] - ((0.005)/18)
-        d['is_value']['less'] = d['is_value']['less'] - ((0.005)/18)
-        d['is_value']['odd'] = d['is_value']['odd'] - ((0.005)/18)
-        d['is_value']['even'] = d['is_value']['even'] - ((0.005)/18)
-        
-    if(previous1['royal'] == 1):
-        d['is_value']['royal'] = d['is_value']['royal'] + (0.005/3)
-        d['is_value']['greater'] = d['is_value']['greater'] - ((0.005)/18)
-        d['is_value']['plus1'] = d['is_value']['plus1'] - ((0.005)/18)
-        d['is_value']['minus1'] = d['is_value']['minus1'] - ((0.005)/18)
-        d['is_value']['less'] = d['is_value']['less'] - ((0.005)/18)
-        d['is_value']['odd'] = d['is_value']['odd'] - ((0.005)/18)
-        d['is_value']['even'] = d['is_value']['even'] - ((0.005)/18)
-        
-    if(current['royal'] == 1):
-        d['is_value']['royal'] = d['is_value']['royal'] + (0.005/3)
-        d['is_value']['greater'] = d['is_value']['greater'] - ((0.005)/18)
-        d['is_value']['plus1'] = d['is_value']['plus1'] - ((0.005)/18)
-        d['is_value']['minus1'] = d['is_value']['minus1'] - ((0.005)/18)
-        d['is_value']['less'] = d['is_value']['less'] - ((0.005)/18)
-        d['is_value']['odd'] = d['is_value']['odd'] - ((0.005)/18)
-        d['is_value']['even'] = d['is_value']['even'] - ((0.005)/18)
-        
-    if(previous2['odd'] == 1):
-        d['is_value']['odd'] = d['is_value']['odd'] + (0.005/3)
-        d['is_value']['greater'] = d['is_value']['greater'] - ((0.005)/18)
-        d['is_value']['plus1'] = d['is_value']['plus1'] - ((0.005)/18)
-        d['is_value']['minus1'] = d['is_value']['minus1'] - ((0.005)/18)
-        d['is_value']['less'] = d['is_value']['less'] - ((0.005)/18)
-        d['is_value']['even'] = d['is_value']['even'] - ((0.005)/18)
-        d['is_value']['royal'] = d['is_value']['royal'] - ((0.005)/18)
-        
-    if(previous1['odd'] == 1):
-        d['is_value']['odd'] = d['is_value']['odd'] + (0.005/3)
-        d['is_value']['greater'] = d['is_value']['greater'] - ((0.005)/18)
-        d['is_value']['plus1'] = d['is_value']['plus1'] - ((0.005)/18)
-        d['is_value']['minus1'] = d['is_value']['minus1'] - ((0.005)/18)
-        d['is_value']['less'] = d['is_value']['less'] - ((0.005)/18)
-        d['is_value']['even'] = d['is_value']['even'] - ((0.005)/18)
-        d['is_value']['royal'] = d['is_value']['royal'] - ((0.005)/18)
-
-    if(current['odd'] == 1):
-        d['is_value']['odd'] = d['is_value']['odd'] + (0.005/3)
-        d['is_value']['greater'] = d['is_value']['greater'] - ((0.005)/18)
-        d['is_value']['plus1'] = d['is_value']['plus1'] - ((0.005)/18)
-        d['is_value']['minus1'] = d['is_value']['minus1'] - ((0.005)/18)
-        d['is_value']['less'] = d['is_value']['less'] - ((0.005)/18)
-        d['is_value']['even'] = d['is_value']['even'] - ((0.005)/18)
-        d['is_value']['royal'] = d['is_value']['royal'] - ((0.005)/18)
-    
-    if (comparison['less'] == 1):
-        d['is_value']['less'] = d['is_value']['less'] + (0.005)
-        d['is_value']['greater'] = d['is_value']['greater'] - ((0.005)/6)
-        d['is_value']['plus1'] = d['is_value']['plus1'] - ((0.005)/6)
-        d['is_value']['minus1'] = d['is_value']['minus1'] - ((0.005)/6)
-        d['is_value']['even'] = d['is_value']['even'] - ((0.005)/6)
-        d['is_value']['odd'] = d['is_value']['odd'] - ((0.005)/6)
-        d['is_value']['royal'] = d['is_value']['royal'] - ((0.005)/6)
-        
-    if (comparison['greater'] == 1):
-        d['is_value']['greater'] = d['is_value']['greater'] + (0.005)
-        d['is_value']['less'] = d['is_value']['less'] - ((0.005)/6)
-        d['is_value']['plus1'] = d['is_value']['plus1'] - ((0.005)/6)
-        d['is_value']['minus1'] = d['is_value']['minus1'] - ((0.005)/6)
-        d['is_value']['even'] = d['is_value']['even'] - ((0.005)/6)
-        d['is_value']['odd'] = d['is_value']['odd'] - ((0.005)/6)
-        d['is_value']['royal'] = d['is_value']['royal'] - ((0.005)/6)
-        
-    if (comparison['plus1'] == 1):
-        d['is_value']['plus1'] = d['is_value']['plus1'] + (0.005)
-        d['is_value']['greater'] = d['is_value']['greater'] - ((0.005)/6)
-        d['is_value']['less'] = d['is_value']['less'] - ((0.005)/6)
-        d['is_value']['minus1'] = d['is_value']['minus1'] - ((0.005)/6)
-        d['is_value']['even'] = d['is_value']['even'] - ((0.005)/6)
-        d['is_value']['odd'] = d['is_value']['odd'] - ((0.005)/6)
-        d['is_value']['royal'] = d['is_value']['royal'] - ((0.005)/6)
-        
-    if (comparison['minus1'] == 1):
-        d['is_value']['minus1'] = d['is_value']['minus1'] + (0.005)
-        d['is_value']['greater'] = d['is_value']['greater'] - ((0.005)/6)
-        d['is_value']['plus1'] = d['is_value']['plus1'] - ((0.005)/6)
-        d['is_value']['less'] = d['is_value']['less'] - ((0.005)/6)
-        d['is_value']['even'] = d['is_value']['even'] - ((0.005)/6)
-        d['is_value']['odd'] = d['is_value']['odd'] - ((0.005)/6)
-        d['is_value']['royal'] = d['is_value']['royal'] - ((0.005)/6)
-    return d
-
 def alternate(previous2,previous1,current):
     alter = {}
     for key in previous2:
@@ -407,19 +174,16 @@ def probabilityCard(card, d):
 
     if(card['C']==1):
         d['is_suit']['C']+=0.005
-        #count_suit+=1
     if(card['C']==0):
         d['is_suit']['C']=d['is_suit']['C']-(0.005/(3))
                                                          
     if(card['R']==1):
         d['is_color']['R']+=0.005
-        # count_suit+=1
     if(card['R']==0):
         d['is_color']['R']=d['is_color']['R']-0.005
 
     if(card['B']==1):
         d['is_color']['R']+=0.005
-        # count_suit+=1
     if(card['B']==0):
         d['is_color']['B']=d['is_color']['B']-0.005
     if(card['even'] == 1):
@@ -493,6 +257,9 @@ def main():
     d = {'is_suit':{'D':0.25,'H':0.25,'S':0.25,'C':0.25},'is_value':{'even':0.14,'odd':0.14,'royal':0.14,'less':0.14,'greater':0.14,'plus1':0.14,'minus1':0.14},'is_color':{'R':0.5,'B':0.5}}
     previous=[]
     current={}
+    flag=0
+    scoring = 0
+    count_iter=0
     x=raw_input("Is the God entering any cards?(Y/N)")
     if(x=='Y'):
         more='Y'
@@ -505,9 +272,10 @@ def main():
             correct.append(i)
         if len(previous)<3:
             x=len(correct)
+            print "yes god card random"
             while len(previous)!=3:
                 card=card_generator.random_card()
-                play(card,flag)
+                flag=correct_wrong(card,flag,scoring)            
                 print "BoardState",boardState()
                 if len(correct)>x:
                     l.append(card)
@@ -521,20 +289,22 @@ def main():
             #correct will b empty
             x=len(correct)
             #3 correct random cards taken
+            print "no god card random"
             while len(previous)<=3:
                 card=card_generator.random_card()
-                play(card,flag)
+                flag=correct_wrong(card,flag,scoring)
                 if len(correct)>x:
                     l.append(card)
                     previous.append(card)
                     x+=1
-    
-    #print "scientist correct",correct               
+    print "scientist correct",correct               
     previous2=extraction(previous[0])
     previous1=extraction(previous[1])
     current=extraction(previous[2])
+    a1 = alternate(previous2, previous1, current)
     print "correct",correct
-    for i in range(0,50):
+    for i in range(0,200):
+        count_iter=count_iter+1
         comparison = comparator(previous2, previous1, current)
     
         p1 = probabilityCard(previous2,d)
@@ -542,27 +312,33 @@ def main():
         p3 = probabilityCard(current,p2)
         p = probabilityCompare(comparison, p3)
         a1 = alternate(previous2, previous1, current)
+        print a1
         altPos = alternatePos(previous2, previous1, current)
         s=setRule(p,a1)
         print "setrule",s
-        cb=CurrentBestHypothesis.scientist(p,flag,correct)
+        cb=CurrentBestHypothesis.scientist(p,flag,correct,a1,count_iter)#changes made here
         if len(cb)==0:
             print "We found the above rule! Yayy!"
+            print "BoardState",boardState()
             x=raw_input("Is the rule correct?(Y/N)")
-           if x == 'N':
-               scoring == score(scoring ,15)
-           break
+            if x == 'N':
+               scoring = score(scoring ,15)
+            break
         if len(a1)==0:
             card = card_generator.card_generator(cb[0],cb[1],correct)
-            play(card,flag)
+            print "card",card
+            flag=correct_wrong(card,flag,scoring)
             card1 = extraction(card)
+            print "card1", card1
             previous2 = previous1
             previous1 = current
             current = card1
         else:
             card=alternateCardGen.alternateCard(correct)#alternate_card_generator.alternateCard(a1)
-            play(card,flag)
+            print "card",card
+            flag=correct_wrong(card,flag,scoring)
             card1 = extraction(card)
+            print "card2",card1
             previous2 = previous1
             previous1 = current
             current = card1

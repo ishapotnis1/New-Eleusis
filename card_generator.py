@@ -702,7 +702,8 @@ def card_generator(avg,high,correct):
                 print rule1,rule2
                 if rule1==rule2:
                     continue
-                card=check(rule1,rule2,avg,high,last_correct)
+                else:
+                    card=check(rule1,rule2,avg,high,last_correct)
                 if card=="":
                     continue
                 else:
@@ -722,7 +723,8 @@ def card_generator(avg,high,correct):
                 print rule1,rule2
                 if rule1==rule2:
                     continue
-                card=check(rule1,rule2,avg,high,last_correct)
+                else:
+                    card=check(rule1,rule2,avg,high,last_correct)
                 if card=="":
                     continue
                 else:
