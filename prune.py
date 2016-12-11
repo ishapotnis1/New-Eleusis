@@ -4,15 +4,18 @@ import Main
 #rule="or(even(current),equal(color(current),R),greater(prev,current))"
 #correct=['4H','2D','6H','8D']
 
+##def func(p):
+##    for k,v in p.iteritems():
+##        ifp
 
-def prune(rule,correct):
+def prune(rule,correct): #probability of current
     n=[]
     n=re.findall("[\w']+",rule)
     #print n
     d=correct[(len(correct)-3):len(correct)]
     f=[]
     for i in range(0,len(d)):  #for general rule
-        c=Main.extraction(d[2])
+        c=Main.extraction(d[i])
         #print c
         d1=c.keys()
         for i in range(0,len(d1)):
@@ -21,7 +24,7 @@ def prune(rule,correct):
                     if(c[d1[i]]==1):
                         f.append(d1[i])
 
-    for i in range(0, len(n)):
+    for i in range(0, len(n)):  #for greater,equal,less
             if(n[i]=='equal'):#k-m omk mk                                                                                                                                                      1
                     if(new_eleusis.equal(d[1],d[2])):
                         f.append('equal')
