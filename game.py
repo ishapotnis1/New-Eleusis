@@ -7,9 +7,32 @@ from rule import *
 from prune import *
 global game_ended
 game_ended = False
+board_list=[]
+score_list={}
+player_card_rule=""
+ad3_card_rule=""
+ad2_card_rule=""
+ad1_card_rule=""
+grule=""
+def score(dealer):
+    if rule()==player_card_rule:
+        score_list[0]+=-75
+    if rule()==ad1_card_rule:
+        score_list[1]+=-75
+    if rule()==ad2_card_rule:
+        score_list[2]+=-75
+    if rule()==ad3_card_rule:
+        score_list[3]+=-75
+    return score_list
 
 def set_rule(rule):
-    return rule
+    grule=rule
+
+def rule():
+    return grule
+
+def boardState():
+    return board_list
 
 def generate_random_card():
     values = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K"]
@@ -66,11 +89,11 @@ adversary2 = Adversary()
 adversary3 = Adversary()
 
 # Set a rule for testing
-rule = "if(greater(prev,current),True, False)"
+rule = "if(equal(color(current),B),True, False)"
 #setRule(rule)
 
 # The three cards that adhere to the rule
-cards = ["4S", "6C", "8S"]
+cards = ["4S", "3S", "4C"]
 for i in cards:
     correct.append(i)
 """
@@ -80,11 +103,13 @@ Use these to update your board state.
 """
 hypothesis=perform(cards)
 flag=0
+tuple1=()
+list1=[]
 for round_num in range(14):
     # Each player plays a card or guesses a rule
     try:
         #Player 1 plays
-        player_card_rule = player.play(hypothesis,cards) 
+        player_card_rule = player.play(hypothesis,cards)
         if is_card(player_card_rule) and flag<2:
             del cards[0]
             cards.append(player_card_rule)
@@ -94,16 +119,33 @@ for round_num in range(14):
             print "evaluate",p
             if p==True or p=='True':
                 flag+=1
+                if len(tuple1)>0:
+                    list3=list(tuple1)
+                    list3.append(list1)
+                    tuple1=tuple(list3)
+                    #tuple1+=list1
+                    board_list.append(tuple1)
+                    list1=[]
+                tuple1=()
+                tuplelist=[]
+                tuplelist.append(player_card_rule)
+                tuple1=tuple(tuplelist)
                 print "player correct",correct, "flag",flag
                 correct.append(player_card_rule)
             else:
                 flag=0
                 wrong.append(player_card_rule)
                 print "player wrong",wrong
+                if len(tuple1)>0:
+                    list1.append(player_card_rule)
                 hypothesis=prune(hypothesis,correct)
                 print "adv",hypothesis
         else:
             print "OUR RULE:", "if(",hypothesis,",True)"
+            print boardState()
+            if rule()==player_card_rule:
+                score_list[0]=-25
+            dealer=0
             raise Exception('')
 
         #Adversary 1 plays
@@ -119,16 +161,32 @@ for round_num in range(14):
             if p==True or p=='True':
                 correct.append(ad1_card_rule)
                 print "adversary1",correct
+                if len(tuple1)>0:
+                    list3=list(tuple1)
+                    list3.append(list1)
+                    tuple1=tuple(list3)
+                    #tuple1+=list1
+                    board_list.append(tuple1)
+                    list1=[]
+                tuple1=()
+                tuplelist=[]
+                tuplelist.append(ad1_card_rule)
+                tuple1=tuple(tuplelist)
                 hypothesis=prune(hypothesis,correct)
                 print "ad1 prune",hypothesis
             else:
                 wrong.append(ad1_card_rule)
                 print "ad1 wrong",wrong
+                if len(tuple1)>0:
+                    list1.append(ad1_card_rule)
                 #hypothesis=prune(hypothesis,correct)
-            #print cards
+                #print cards
         else:
-            print "saale 1 ko mil gya"
+            print "saale 1 ko mil gya",boardState(),"boardstate",ad1_card_rule
             print "bechara hamara rule","if(",hypothesis,",True)"
+            if rule()==ad1_card_rule:
+                score_list[1]=-25
+            dealer=1
             raise Exception('')
 
         #Adversary 2 plays
@@ -147,14 +205,30 @@ for round_num in range(14):
                 print "adversary1",correct
                 hypothesis=prune(hypothesis,correct)
                 print "ad1 prune",hypothesis
-               
+                if len(tuple1)>0:
+                    list3=list(tuple1)
+                    list3.append(list1)
+                    tuple1=tuple(list3)
+                    #tuple1+=list1
+                    board_list.append(tuple1)
+                    list1=[]
+                tuple1=()
+                tuplelist=[]
+                tuplelist.append(ad2_card_rule)
+                tuple1=tuple(tuplelist)
+
             else:
                 wrong.append(ad2_card_rule)
-                
-            #print cards
+                if len(tuple1)>0:
+                    list1.append(ad2_card_rule)
+
+                #print cards
         else:
-            print "saale 2 ko mil gya"
+            print "saale 2 ko mil gya",boardState(),"boardstate",ad2_card_rule
             print "bechara hamara rule","if(",hypothesis,",True)"
+            if rule()==ad2_card_rule:
+                score_list[2]=-25
+            dealer=2
             raise Exception('')
 
         #Adversary 3 plays
@@ -171,14 +245,29 @@ for round_num in range(14):
                 hypothesis=prune(hypothesis,correct)
                 print "ad3 prune",hypothesis
                 print "evaluate",p
+                if len(tuple1)>0:
+                    list3=list(tuple1)
+                    list3.append(list1)
+                    tuple1=tuple(list3)
+                    #tuple1+=list1
+                    board_list.append(tuple1)
+                    list1=[]
+                tuple1=()
+                tuplelist=[]
+                tuplelist.append(ad3_card_rule)
+                tuple1=tuple(tuplelist)
 
             else:
                 wrong.append(ad3_card_rule)
-                
-            #print cards
+                if len(tuple1)>0:
+                    list1.append(ad3_card_rule)
+                #print cards
         else:
-            print "saale 3 ko mil gya"
+            print "saale 3 ko mil gya",boardState(),"boardstate",ad3_card_rule
             print "bechara hamara rule","if(",hypothesis,",True)"
+            if rule()==ad3_card_rule:
+                score_list[3]=-25
+            dealer=3
             raise Exception('')
 
     except:
@@ -189,4 +278,4 @@ for round_num in range(14):
 #rule_player = player.play(cards)
 
 # Check if the guessed rule is correct and print the score
-#score(player)
+score(dealer)
