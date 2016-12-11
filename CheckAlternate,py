@@ -1,7 +1,6 @@
-#  (is_royal(current), False)
-import re
 correct=[]
-wrong=["3S","4D"]
+wrong=["4H","5S"]
+prev="5H"
 import pyparsing # make sure you have this installed
 
 
@@ -29,12 +28,15 @@ def parseRule(rule):
   list2=list2+x.split(")")
  #print list2
 
+
+
+
+
  for x in list2:
   list3=list3+x.split(",")
- #print list3
 
- #str1 = ''.join(list)
- #list=str1.split(")")
+
+
  for x in list3:
   if x=="":
    list3.remove(x)
@@ -109,25 +111,41 @@ def extract(attribute,card):
  return
 
 
-def checkCard(card,list,hypothesis):
+def checkCard(card,list,hypothesis,prev,current):
 
 
   allowedvalues=[]
   allowedsuits=[]
   if "even" in list:
    allowedvalues=['2','4','6','8','10','Q']
+   even = ['2', '4', '6', '8', '10', 'Q']
 
   if "odd" in list:
    allowedvalues = ['A', '3', '5', '7', '9', 'J','K']
+   odd = ['A', '3', '5', '7', '9', 'J', 'K']
 
   if "Royal" in list:
    allowedsuits=['A','Q','J','K']
 
-  suit=extract("Suit",card)
-  value=extract("Value",card)
-  color = extract("Color", card)
+
+
+
+
+
+  suitcurrent=extract("Suit",card)
+  valuecurrent=extract("Value",card)
+  colorcurrent = extract("Color", card)
+
   allowedsuits=list+allowedsuits
   allowedvalues=list+allowedvalues
+
+  if "prev" in list:
+   suitprev = extract("Suit", prev)
+   valueprev = extract("Value", prev)
+   colorprev = extract("Color", prev)
+
+
+
   """for x,y in list.iteritems():
    if x=="equal":
     if y.get(0)=="Suit":
@@ -141,14 +159,19 @@ def checkCard(card,list,hypothesis):
     if y.get(0) == "Value":
      if value in y:
       return x+y"""
-  if suit in allowedsuits:
-   hypothesis=hypothesis+" and alternate  "+ suit
+  if suitcurrent in allowedsuits:
+   hypothesis=hypothesis+" and alternate  "+ suitcurrent
 
-  if value in allowedvalues:
-   hypothesis = hypothesis + " and alternate " + value
+  if valuecurrent in allowedvalues:
+   x=""
+   if valuecurrent in even:
+    x="even"
+   if valuecurrent in odd:
+    x="odd"
+   hypothesis = hypothesis + " and alternate " + x
 
-  if color in list:
-   hypothesis = hypothesis + " and alternate " + color
+  if colorcurrent in list:
+   hypothesis = hypothesis + " and alternate " + colorcurrent
 
 
 
@@ -163,41 +186,11 @@ def CheckAlternate(wrong,hypothesis):
 
 
  for x in wrong:
-  hypothesis=checkCard(x,list,hypothesis)
+  hypothesis=checkCard(x,list,hypothesis,"2H","3H")
 
  return hypothesis
 
-print  CheckAlternate(wrong,"equal(color(current), B")
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+print  CheckAlternate(wrong,"(equal(color,R),equal(color,B))")
 
 
 
