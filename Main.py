@@ -50,8 +50,10 @@ def correct_wrong(card,flag,scoring):
     return flag
             
 			
-def setRule(rule,alternate_rule):
-    return rule,alternate_rule
+"""def setRule(rule,alternate_rule):
+    return rule,alternate_rule"""
+
+
 
 			   
 def extraction(card):
@@ -313,8 +315,8 @@ def main():
         a1 = alternate(previous2, previous1, current)
         print a1
         altPos = alternatePos(previous2, previous1, current)
-        s=setRule(p,a1)
-        print "setrule",s
+        #s=setRule(p,a1)
+        #print "setrule",s
         cb=CurrentBestHypothesis.scientist(p,flag,correct,a1,count_iter)
         if len(cb)=='None':
             print "We found the above rule! Yayy!"
