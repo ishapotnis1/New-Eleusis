@@ -143,10 +143,12 @@ def checkCard(card,list,hypothesis):
   return hypothesis
 
 
-def findSimilarity(card1,card2,list,hypothesis):
+def findSimilarity(card1,card2,list,hypothesis,correct):
     allowedvalues = []
     allowedsuits = []
     allowedcolors = []
+
+    alternatehypothesis=""
     even = ['2', '4', '6', '8', '10', 'Q']
     odd = ['A', '3', '5', '7', '9', 'J', 'K']
     if "even" in list:
@@ -172,34 +174,76 @@ def findSimilarity(card1,card2,list,hypothesis):
     colorprevious2 = extract("Color", card2)
 
     if suitcurrent==suitprevious2:
-     hypothesis =  "equal(suit(current)" + "," + suitcurrent + "))"
+     if keephypothesis(suitcurrent,"Suit",correct,list)==True:
+      alternatehypothesis = alternatehypothesis + "equal(suit(previous2)" + "," + suitcurrent + "))" +"and " +"equal(suit(current)" + "," + suitcurrent + "))"
 
     if valuecurrent in allowedvalues and valueprevious2 in allowedvalues:
-        x = ""
-        if valuecurrent in even and valueprevious2 in even:
-            x = "even"
-        if valuecurrent in odd and valueprevious2 in odd:
-            x = "odd"
-        hypothesis = hypothesis + "AND " + x
+     if valuecurrent in even and valueprevious2 in even:
+      if keephypothesis("odd", "Value",correct)==True:
+        alternatehypothesis = alternatehypothesis+ "equal(value(previous2)" + "," + "even" + "))" + "and " + "equal(value(current)" + "," + "even" + "))"
+
+     if valuecurrent in odd and valueprevious2 in odd:
+      if keephypothesis("even", "Value",correct)==True:
+        alternatehypothesis = alternatehypothesis + "equal(value(previous2)" + "," + "odd" + "))" + "and " + "equal(value(current)" + "," + "odd" + "))"
 
     if valueprevious2 in even and valuecurrent in even:
-        x = "even"
-    if valueprevious2 in odd and valuecurrent in odd:
-        x= "odd"
+     if keephypothesis("even", "Value",correct)==True:
+      alternatehypothesis =alternatehypothesis + "equal(value(previous2)" + "," + "even" + "))" + "and " + "equal(value(current)" + "," + "even" + "))"
 
+    if valueprevious2 in odd and valuecurrent in odd:
+     if keephypothesis("odd", "Value",correct)==True:
+      alternatehypothesis = alternatehypothesis +"equal(value(previous2)" + "," + "odd" + "))" + "and " + "equal(value(current)" + "," + "odd" + "))"
 
     if colorcurrent==colorprevious2:
-     hypothesis =  "equal(color(current)" + "," + colorcurrent + "))"
+     if keephypothesis(colorcurrent, "Color",correct)==True:
+      print "imhere"
+      alternatehypothesis =alternatehypothesis + "equal(color(previous2)" + "," + colorcurrent + "))" + "and " + "equal(color(current)" + "," + colorcurrent + "))"
 
     if colorcurrent in allowedcolors and  colorprevious2 in allowedcolors:
-        if colorcurrent==colorprevious2:
-
-         hypothesis = "equal(color(current)" + "," + colorcurrent + "))"
-
+     if colorcurrent==colorprevious2:
+      if keephypothesis(colorcurrent, "Color",correct)==True:
+       alternatehypothesis = alternatehypothesis +"equal(color(previous2)" + "," + colorcurrent + "))" + "and " + "equal(value(current)" + "," + colorcurrent + "))"
 
     if suitcurrent in allowedsuits and suitprevious2 in allowedsuits:
-     hypothesis = hypothesis + "and " +"Royal"
-    return hypothesis
+     if keephypothesis(suitcurrent, "Suit",correct)==True:
+      alternatehypothesis = alternatehypothesis +"equal(suit(previous2)" + "," + suitcurrent + "))" + "and " + "equal(suit(current)" + "," + suitcurrent + "))"
+    hypothesis=hypothesis+ "alternate " + alternatehypothesis
+    return alternatehypothesis
+
+
+def keephypothesis(x,attribute,correct):
+
+ return True
+ """even = ['2', '4', '6', '8', '10', 'Q']
+ odd = ['A', '3', '5', '7', '9', 'J', 'K']
+
+ if attribute=="Suit":
+  for card in correct:
+   s=extract(attribute, card)
+   if x!=s:
+    return False
+ if attribute=="Color":
+  for card in correct:
+    s = extract(attribute,card)
+    if x != s:
+     return False
+
+ if attribute=="Value":
+  s = extract(attribute, card)
+  for card in correct:
+   if x=="even":
+    if s not in even:
+     return False
+    if x=="odd":
+     if x == "even":
+      if s not in odd:
+        return False
+
+  return"""
+
+
+
+
 
 
 
@@ -225,14 +269,17 @@ def CheckAlternate(wrong,hypothesis,correct,state):
 
  for i  in range(len(state)):
   if allcards[i] in  correct and allcards[i+2] in correct:
-    hypothesis=findSimilarity(allcards[i],allcards[i+2],list,hypothesis)
+    hypothesis=findSimilarity(allcards[i],allcards[i+2],list,hypothesis,correct)
 
   return hypothesis
 
+wrong=[]
+correct=['4S','10H','2S','9H']
+state=['4S','10H','2S','9H']
 
+print CheckAlternate(wrong,"(orf(greater(prev,current)))",correct,state)
 
-
-
+#print evaluate(CheckAlternate(wrong,"(orf(greater(prev,current),notf(is_royal(current))))",correct,state))
 
 
 
