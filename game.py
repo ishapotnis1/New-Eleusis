@@ -5,6 +5,8 @@ from random import randint
 from new_eleusis import *
 from rule import *
 from prune import *
+import checkAlternate
+import Main
 global game_ended
 game_ended = False
 board_list=[]
@@ -14,27 +16,22 @@ ad3_card_rule=""
 ad2_card_rule=""
 ad1_card_rule=""
 grule=""
+def score(dealer):
+    if rule()==player_card_rule:
+        score_list[0]+=-75
+    if rule()==ad1_card_rule:
+        score_list[1]+=-75
+    if rule()==ad2_card_rule:
+        score_list[2]+=-75
+    if rule()==ad3_card_rule:
+        score_list[3]+=-75
+    return score_list[0]
 
-
-def setRule(rule):
-    print "god",rule
+def set_rule(rule):
     grule=rule
 
 def rule():
-    print "grule",grule
     return grule
-
-def score(dealer):
-    print rule()
-    if cmp(rule(),player_card_rule):
-        score_list[0]+=-75
-    if cmp(rule(),ad1_card_rule):
-        score_list[1]+=-75
-    if cmp(rule(),ad2_card_rule):
-        score_list[2]+=-75
-    if cmp(rule(),ad3_card_rule):
-        score_list[3]+=-75
-    return score_list[0]
 
 def boardState():
     return board_list
@@ -94,11 +91,11 @@ adversary2 = Adversary()
 adversary3 = Adversary()
 
 # Set a rule for testing
-rule = "if(equal(color(current),B),True, False)"
-setRule(rule)
+rule = "(even(prev),odd(current))"
+#setRule(rule)
 
 # The three cards that adhere to the rule
-cards = ["4S", "3S", "4C"]
+cards = ["4S", "5D", "4C"]
 for i in cards:
     correct.append(i)
 """
@@ -107,15 +104,17 @@ The cards passed to scientist are the last 3 cards played.
 Use these to update your board state.
 """
 hypothesis=perform(cards)
+
 flag=0
 tuple1=()
 list1=[]
-dealer=0
 for round_num in range(14):
     # Each player plays a card or guesses a rule
     try:
         #Player 1 plays
         player_card_rule = player.play(hypothesis,cards)
+
+        print  "WITH ALTERNATE", checkAlternate.CheckAlternate(Main.wrong, hypothesis,Main.correct,cards)
         if is_card(player_card_rule) and flag<2:
             del cards[0]
             cards.append(player_card_rule)
@@ -148,6 +147,9 @@ for round_num in range(14):
                 print "adv",hypothesis
         else:
             print "OUR RULE:", "if(",hypothesis,",True)"
+            print  "WITH ALTERNATE", checkAlternate.CheckAlternate(Main.wrong,hypothesis,Main.correct,cards)
+            #print  "these are wrong" ,Main.wrong
+            #print  "these are CORRECT", Main.correct
             print boardState()
             if rule()==player_card_rule:
                 score_list[0]=-25
