@@ -12,7 +12,7 @@ def scientist(data, cards, hand, game_ended):
     current  = hand[0]
     previous = cards[2] #replace with card from corrent list later
     previous2 = cards[1]
-    print "data",data
+    #print "data",data
     #data = "orf(even(current),equal(color(current),R),greater(prev,current)) "
     if 'orf' in data:
         data = data.split('orf(')[1]
@@ -48,7 +48,7 @@ def scientist(data, cards, hand, game_ended):
             card_dict.append('greater')
         if 'less' in data:
             card_dict.append('less')
-        print "hello",card_dict
+        #print "hello",card_dict
         best_dict= {}
         for card in range(0,14):
             extr = extraction(hand[card])
@@ -70,22 +70,25 @@ def scientist(data, cards, hand, game_ended):
     elif 'iff' in data:
         print "hold"
     card = 0
-    print "hand",hand
-    print "best",best_dict
-    print max(best_dict.values())
+    #print "hand",hand
+    #print "best",best_dict
+    #print max(best_dict.values())
     for k,v in best_dict.items():
         if v==max(best_dict.values()):
             print "card gen",k
             selected=k
             break
-    print "after"
+    #print "after"
     hand.remove(selected)
-    print "rem",hand
+    #print "rem",hand
     r = [generate_random_cards() for i in range(14)]
-    print "r",r
+    #print "r",r
     hand.append(r[0])
-    print "ad",hand
-    return selected
+    #print "ad",hand,selected
+    if game_ended==False:
+        return selected
+    else:
+        return data
     #break
     #self.hand.pop(k)
     #print self.hand
@@ -107,27 +110,27 @@ def perform(cards):
         #all are even
         print "all even"
         list.append("even(current)")
-    elif even(prev2)==True and even(current)==True:
+    """elif even(prev2)==True and even(current)==True:
         print "alternate even"
-        list.append("equal(even(previous2),even(current))")
+        list.append("equal(even(previous2),even(current))")"""
 
     #all are odd
     if odd(prev2)==True and odd(prev1)==True and odd(current)==True:
         #all are odd
         print "all odd"
         list.append("odd(current)")
-    elif odd(prev2)==True and odd(current)==True:
+    """elif odd(prev2)==True and odd(current)==True:
         print "alternate odd"
-        list.append("equal(odd(previous2),odd(current))")
+        list.append("equal(odd(previous2),odd(current))")"""
 
     #all are royal
     if is_royal(prev2)==True and is_royal(prev1)==True and is_royal(current)==True:
         #all are royal
         print "all royal"
         list.append("is_royal(current)")
-    elif is_royal(prev2)==True and is_royal(current)==True:
+    """elif is_royal(prev2)==True and is_royal(current)==True:
         print "alternate is_royal"
-        list.append("equal(is_royal(previous2),is_royal(current))")
+        list.append("equal(is_royal(previous2),is_royal(current))")"""
 
     #all have same color
     if equal(color(prev2),color(prev1)) and equal(color(prev1),color(current)):
