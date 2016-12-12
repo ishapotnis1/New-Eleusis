@@ -153,7 +153,7 @@ def CheckAlternate(wrong,hypothesis):
 
  return hypothesis
 
-#print  CheckAlternate(wrong,"( orf(equal(color(current),B),greater(prev,current)) ,True)")
+print  CheckAlternate(wrong,"( orf(equal(color(current),B),greater(prev,current)) ,True)")
 
 
 
