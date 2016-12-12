@@ -5,6 +5,8 @@ from random import randint
 from new_eleusis import *
 from rule import *
 from prune import *
+import checkAlternate
+import Main
 global game_ended
 game_ended = False
 board_list=[]
@@ -23,7 +25,7 @@ def score(dealer):
         score_list[2]+=-75
     if rule()==ad3_card_rule:
         score_list[3]+=-75
-    return score_list
+    return score_list[0]
 
 def set_rule(rule):
     grule=rule
@@ -142,6 +144,9 @@ for round_num in range(14):
                 print "adv",hypothesis
         else:
             print "OUR RULE:", "if(",hypothesis,",True)"
+            print  "WITH ALTERNATE", checkAlternate.CheckAlternate(Main.wrong,hypothesis)
+            print  "these are wrong" ,Main.wrong
+            print  "these are CORRECT", Main.correct
             print boardState()
             if rule()==player_card_rule:
                 score_list[0]=-25
@@ -278,4 +283,4 @@ for round_num in range(14):
 #rule_player = player.play(cards)
 
 # Check if the guessed rule is correct and print the score
-score(dealer)
+#print score(dealer)
