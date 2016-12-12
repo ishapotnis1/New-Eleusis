@@ -1,8 +1,8 @@
 import re
 import new_eleusis
 import Main
-#rule="or(even(current),equal(color(current),R),greater(prev,current))"
-#correct=['4H','2D','6H','8D']
+#rule="orf(equal(even(previous2),even(current)),equal(color(current),B),greater(prev,current),notf(is_royal(current)))"
+#correct=['4H','4S','3S','3H']
 
 ##def func(p):
 ##    for k,v in p.iteritems():
@@ -11,6 +11,7 @@ import Main
 def prune(rule,correct): #probability of current
     n=[]
     n=re.findall("[\w']+",rule)
+    print n
     #print n
     d=correct[(len(correct)-3):len(correct)]
     f=[]
@@ -39,10 +40,29 @@ def prune(rule,correct): #probability of current
             if(n[i]=='less'):
                 if(new_eleusis.value(d[0])<new_eleusis.value(d[1]) and new_eleusis.value(d[1])<new_eleusis.value(d[2])):
                     f.append('value_less')
-                else:
-                    #if(new_eleusis.less(d[1],d[2])):
+                else:                    #if(new_eleusis.less(d[1],d[2])):
                     f.append('less')
-                        
+
+    print "l"
+    print n
+    count=0
+    for i in range(0,len(n)):
+        if(n[i]=='notf'):
+           for j in range(0,len(d)):
+               c1=Main.extraction(d[j])
+               print c1
+               if(c1['royal']==1):
+                   count=count+1
+                   print "hi"
+                   break
+           if(count>0):
+                break
+           else:
+              f.append('not_royal')
+        
+                    
+            
+           
     final=[]
     #print final
     for x in f:#pruning is_color
@@ -79,6 +99,9 @@ def prune(rule,correct): #probability of current
             list.append("greater(value(prev),value(current))")
         if(final[s]=='greater'):
             list.append("greater(prev,current)")
+        if(final[s]=='not_royal'):
+            list.append("notf(is_royal(current))")
+
             
     for i in list:
         str1+=i+","
