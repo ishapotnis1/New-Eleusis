@@ -107,18 +107,27 @@ def perform(cards):
         #all are even
         print "all even"
         list.append("even(current)")
+    elif even(prev2)==True and even(current)==True:
+        print "alternate even"
+        list.append("equal(even(previous2),even(current))")
 
     #all are odd
     if odd(prev2)==True and odd(prev1)==True and odd(current)==True:
         #all are odd
         print "all odd"
         list.append("odd(current)")
+    elif odd(prev2)==True and odd(current)==True:
+        print "alternate odd"
+        list.append("equal(odd(previous2),odd(current))")
 
     #all are royal
     if is_royal(prev2)==True and is_royal(prev1)==True and is_royal(current)==True:
         #all are royal
         print "all royal"
         list.append("is_royal(current)")
+    elif is_royal(prev2)==True and is_royal(current)==True:
+        print "alternate is_royal"
+        list.append("equal(is_royal(previous2),is_royal(current))")
 
     #all have same color
     if equal(color(prev2),color(prev1)) and equal(color(prev1),color(current)):
@@ -156,6 +165,7 @@ def perform(cards):
             else:
                 list.append("less(prev,current)")
             print "next card is greater than prev"
+
     if greater(prev2,prev1)==True:
         if greater(prev1,current)==True:
             if value(prev2)>value(prev1) and value(prev1)>value(current):
@@ -164,6 +174,10 @@ def perform(cards):
                 list.append("greater(prev,current)")
             #alternate greater
             print "next card is less than the previous"
+
+    if is_royal(prev2)==False and is_royal(prev1)==False and is_royal(current)==False:
+        print "no royal"
+        list.append("notf(is_royal(current))")
 
     for i in list:
         str1+=i+","
