@@ -1,8 +1,7 @@
 #  (is_royal(current), False)
 import re
-correct=[]
-wrong=["4H","5S"]
-prev="5H"
+
+
 import pyparsing # make sure you have this installed
 
 map={}
@@ -18,6 +17,7 @@ def parseRule(rule):
  list3 = []
  list4=[]
  list=rule.split("(")
+ print list
 
  for x in list:
   list2=list2+x.split(")")
@@ -32,7 +32,8 @@ def parseRule(rule):
  for x in list4:
   if x=="":
    list4.remove(x)
-   return list4
+
+ return list4
 
 
 def breakrules(list):
@@ -42,7 +43,6 @@ def breakrules(list):
  rule=""
  result=""
  for x in list:
-
   if(x!=""):
    if x=="True" or x=="False":
     result=x
@@ -50,7 +50,8 @@ def breakrules(list):
    if x=="equal" or x=="greater" or x=="less":
     rule=x
     listTemp=[]
-    print rule
+
+
 
 
    else:
@@ -92,14 +93,12 @@ def extract(attribute,card):
 
 
 
-def findRule(hypothesis):
- list=hypothesis.split("),")
- return list
 
 
 
 
-def checkCard(card,list,hypothesis,prev,current):
+
+def checkCard(card,list,hypothesis):
 
 
   allowedvalues=[]
@@ -122,10 +121,7 @@ def checkCard(card,list,hypothesis,prev,current):
   allowedsuits=list+allowedsuits
   allowedvalues=list+allowedvalues
 
-  if "prev" in list:
-   suitprev = extract("Suit", prev)
-   valueprev = extract("Value", prev)
-   colorprev = extract("Color", prev)
+
 
   if suitcurrent in allowedsuits:
    hypothesis=hypothesis+ "AND "+"equal(suit(current),"+ ","+suitcurrent+"))"
@@ -136,24 +132,103 @@ def checkCard(card,list,hypothesis,prev,current):
     x="even"
    if valuecurrent in odd:
     x="odd"
-   hypothesis = hypothesis + "AND "+x
+   hypothesis = hypothesis + "AND "+  x
 
   if colorcurrent in list:
    hypothesis = hypothesis +"and "+ "equal(color(current),"+ ","+colorcurrent+"))"
 
+
+
+
   return hypothesis
 
 
+def findSimilarity(card1,card2,list,hypothesis):
+    allowedvalues = []
+    allowedsuits = []
+    allowedcolors = []
+    even = ['2', '4', '6', '8', '10', 'Q']
+    odd = ['A', '3', '5', '7', '9', 'J', 'K']
+    if "even" in list:
+        allowedvalues = ['2', '4', '6', '8', '10', 'Q']
 
-def CheckAlternate(wrong,hypothesis):
+    if "odd" in list:
+        allowedvalues = ['A', '3', '5', '7', '9', 'J', 'K']
+
+    if "Royal" in list:
+        allowedsuits = ['A', 'Q', 'J', 'K']
+
+    if 'R' in list:
+        allowedcolors =allowedcolors.append('R')
+    if 'B' in list:
+        allowedcolors =allowedcolors.append('B')
+
+    suitcurrent = extract("Suit", card1)
+    valuecurrent = extract("Value", card1)
+    colorcurrent = extract("Color", card1)
+
+    suitprevious2 = extract("Suit", card2)
+    valueprevious2 = extract("Value", card2)
+    colorprevious2 = extract("Color", card2)
+
+    if suitcurrent==suitprevious2:
+     hypothesis =  "equal(suit(current)" + "," + suitcurrent + "))"
+
+    if valuecurrent in allowedvalues and valueprevious2 in allowedvalues:
+        x = ""
+        if valuecurrent in even and valueprevious2 in even:
+            x = "even"
+        if valuecurrent in odd and valueprevious2 in odd:
+            x = "odd"
+        hypothesis = hypothesis + "AND " + x
+
+    if valueprevious2 in even and valuecurrent in even:
+        x = "even"
+    if valueprevious2 in odd and valuecurrent in odd:
+        x= "odd"
+
+
+    if colorcurrent==colorprevious2:
+     hypothesis =  "equal(color(current)" + "," + colorcurrent + "))"
+
+    if colorcurrent in allowedcolors and  colorprevious2 in allowedcolors:
+        if colorcurrent==colorprevious2:
+
+         hypothesis = "equal(color(current)" + "," + colorcurrent + "))"
+
+
+    if suitcurrent in allowedsuits and suitprevious2 in allowedsuits:
+     hypothesis = hypothesis + "and " +"Royal"
+    return hypothesis
+
+
+
+
+
+
+
+
+def CheckAlternate(wrong,hypothesis,correct,state):
 
  list=parseRule(hypothesis)
+
+
+ allcards = state
+ #print allcards
+
+
+ """if len(x)!=0
  for x in wrong:
-  hypothesis=checkCard(x,list,hypothesis,"2H","3H")
+  hypothesis=checkCard(x,list,hypothesis)"""
 
- return hypothesis
 
-print  CheckAlternate(wrong,"( orf(equal(color(current),B),greater(prev,current)) ,True)")
+
+ for i  in range(len(state)):
+  if allcards[i] in  correct and allcards[i+2] in correct:
+    hypothesis=findSimilarity(allcards[i],allcards[i+2],list,hypothesis)
+
+  return hypothesis
+
 
 
 
