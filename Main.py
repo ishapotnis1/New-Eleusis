@@ -1,359 +1,286 @@
-#Isha Potnis (NE12771)
-#Nitika Khurana (BH42137)
-#Komal Sharan XQ71651
-#Srishty Saha (RY85017)
+#Put your program name in place of program_name
 
+#from program_name import *
+from random import randint
 from new_eleusis import *
-import CurrentBestHypothesis
-import alternateCardGen
-global correct
-correct = []
-global wrong
-wrong=[]
-global current
-current={}
-l=[]
-global board_list
+from rule import *
+from prune import *
+import checkAlternate
+import Main
+global game_ended
+game_ended = False
 board_list=[]
-wrong_board=[]
-global alter
-alter = {}
-prevres=None
+score_list={}
+player_card_rule=""
+ad3_card_rule=""
+ad2_card_rule=""
+ad1_card_rule=""
+grule=""
+def score(dealer):
+    if rule()==player_card_rule:
+        score_list[0]+=-75
+    if rule()==ad1_card_rule:
+        score_list[1]+=-75
+    if rule()==ad2_card_rule:
+        score_list[2]+=-75
+    if rule()==ad3_card_rule:
+        score_list[3]+=-75
+    return score_list[0]
 
-def score(scoring, number):
-   scoring = scoring + number
-   return scoring
+def set_rule(rule):
+    grule=rule
 
-
-def correct_wrong(card,flag,scoring):
-    x=raw_input("Press 'Y' if card is correct |  Press 'N' if card is wrong")
-    tuple1=()
-    list1=[]
-    if(x=='Y'):
-        flag+=1
-        tuple1=list(tuple1)
-        tuple1.append(card)
-        for i in wrong_board:
-            list1.append(i)
-        tuple1.append(list1)
-        print tuple1
-        tuple1=tuple(tuple1)
-        board_list.append(tuple1)
-        correct.append(card)
-        if flag > 20 and flag < 200 :
-           scoring = score(scoring ,1)
-    else:
-        flag=0
-        wrong.append(card)
-        wrong_board.append(card)
-        scoring = score(scoring ,2)
-    return flag
-            
-			
-"""def setRule(rule,alternate_rule):
-    return rule,alternate_rule"""
-
-
-
-			   
-def extraction(card):
-    value1=value(card)
-    rules=['D','H','S','C','even','odd','royal','R','B','value','card']
-    #updating rules dictionary
-    hypothesis={}
-    if(suit(card)=='D'):
-        hypothesis[rules[0]]=1
-    else:
-        hypothesis[rules[0]]=0
-    if(suit(card)=='H'):
-        hypothesis[rules[1]]=1
-    else:
-        hypothesis[rules[1]]=0
-    if(suit(card)=='S'):
-        hypothesis[rules[2]]=1
-    else:
-        hypothesis[rules[2]]=0
-    if(suit(card)=='C'):
-        hypothesis[rules[3]]=1
-    else:
-        hypothesis[rules[3]]=0
-    if(even(card)==True):
-        hypothesis[rules[4]]=1
-    else:
-        hypothesis[rules[4]]=0
-    if(odd(card)==True):
-        hypothesis[rules[5]]=1
-    else:
-        hypothesis[rules[5]]=0
-    if(is_royal(card)==True):
-        hypothesis[rules[6]]=1
-    else:
-        hypothesis[rules[6]]=0
-    if (color(card)=='R'):
-        hypothesis[rules[7]]=1
-    else:
-         hypothesis[rules[7]]=0
-    if(color(card)=='B'):
-        hypothesis[rules[8]]=1
-    else:
-         hypothesis[rules[8]]=0
-         
-    hypothesis[rules[9]]=value1
-    hypothesis[rules[10]]=card
-
-    return hypothesis
-
-#less than 3 rule pending
-def comparator(previous2,previous1,current):
-    rules=['less','greater','plus1','minus1']
-    hypothesis ={}
-    print previous2
-    if(less(previous2['card'],previous1['card']) and less(previous1['card'],current['card'])):
-        hypothesis[rules[0]] = 1
-    else:
-        hypothesis[rules[0]] = 0
-    if(greater(previous2['card'],previous1['card']) and greater(previous1['card'],current['card'])):
-        hypothesis[rules[1]] = 1
-    else:
-        hypothesis[rules[1]] = 0
-    if (previous2['value']+1<14 and previous1['value']+1<14):
-        print "plus1"
-        if(plus1(previous2['card'])== previous1['card'] and plus1(previous1['card']) == current['card']):
-            print "plus1 2"
-            hypothesis[rules[2]] = 1
-        else:
-            hypothesis[rules[2]] = 0
-    else:
-        hypothesis[rules[2]] = 0
-    if (previous2['value']-1>0 and previous1['value']-1>0):
-        print "fi"
-        if(minus1(previous2['card']) == previous1['card'] and minus1(previous1['card']) == current['card']):
-            print"fi1"
-            hypothesis[rules[3]] = 1
-        else:
-            hypothesis[rules[3]] = 0
-
-    else:
-        hypothesis[rules[3]] = 0
-    
-    return hypothesis
-
-def alternate(previous2,previous1,current):
-    alter = {}
-    for key in previous2:
-        if (previous2.get(key) == current.get(key) and current.get(key) == 1):
-            alter[key] = [];
-            for k in previous1:
-                if (previous1[k] == 1):
-                    alter[key].append(k)
-    return alter
-
-def alternatePos(previous2,previous1,current):
-    alterPos = {}
-    for key in previous2:
-        if (previous2.get(key) == current.get(key) and current.get(key) == 1):
-            alterPos[key] = [];
-            for k in current:
-                if (current[k] == 1):
-                    alterPos[key].append(k)
-    return alterPos
-
-def probabilityCard(card, d):
-    if(card['D']==1):
-        d['is_suit']['D']+=0.005
-    if(card['D']==0):
-        d['is_suit']['D']=d['is_suit']['D']-(0.005/(3))
-                                                     
-    if(card['H']==1):
-        d['is_suit']['H']+=0.005
-        #count_suit+=1
-    if(card['H']==0):
-        d['is_suit']['H']=d['is_suit']['H']-(0.005/(3))
-
-    if(card['S']==1):
-        d['is_suit']['S']+=0.005
-        #count_suit+=1
-    if(card['S']==0):
-        d['is_suit']['S']=d['is_suit']['S']-(0.005/(3))
-
-    if(card['C']==1):
-        d['is_suit']['C']+=0.005
-    if(card['C']==0):
-        d['is_suit']['C']=d['is_suit']['C']-(0.005/(3))
-                                                         
-    if(card['R']==1):
-        d['is_color']['R']+=0.005
-    if(card['R']==0):
-        d['is_color']['R']=d['is_color']['R']-0.005
-
-    if(card['B']==1):
-        d['is_color']['R']+=0.005
-    if(card['B']==0):
-        d['is_color']['B']=d['is_color']['B']-0.005
-    if(card['even'] == 1):
-        d['is_value']['even'] = d['is_value']['even'] + (0.005)
-        d['is_value']['greater'] = d['is_value']['greater'] - ((0.005)/6)
-        d['is_value']['plus1'] = d['is_value']['plus1'] - ((0.005)/6)
-        d['is_value']['minus1'] = d['is_value']['minus1'] - ((0.005)/6)
-        d['is_value']['less'] = d['is_value']['less'] - ((0.005)/6)
-        d['is_value']['odd'] = d['is_value']['odd'] - ((0.005)/6)
-        d['is_value']['royal'] = d['is_value']['royal'] - ((0.005)/6)
-        
-    if(card['royal'] == 1):
-        d['is_value']['royal'] = d['is_value']['royal'] + (0.005)
-        d['is_value']['greater'] = d['is_value']['greater'] - ((0.005)/6)
-        d['is_value']['plus1'] = d['is_value']['plus1'] - ((0.005)/6)
-        d['is_value']['minus1'] = d['is_value']['minus1'] - ((0.005)/6)
-        d['is_value']['less'] = d['is_value']['less'] - ((0.005)/6)
-        d['is_value']['odd'] = d['is_value']['odd'] - ((0.005)/6)
-        d['is_value']['even'] = d['is_value']['even'] - ((0.005)/6)        
-
-    if(card['odd'] == 1):
-        d['is_value']['odd'] = d['is_value']['odd'] + (0.005)
-        d['is_value']['greater'] = d['is_value']['greater'] - ((0.005)/6)
-        d['is_value']['plus1'] = d['is_value']['plus1'] - ((0.005)/6)
-        d['is_value']['minus1'] = d['is_value']['minus1'] - ((0.005)/6)
-        d['is_value']['less'] = d['is_value']['less'] - ((0.005)/6)
-        d['is_value']['even'] = d['is_value']['even'] - ((0.005)/6)
-        d['is_value']['royal'] = d['is_value']['royal'] - ((0.005)/6)
-    return d
-
-def probabilityCompare(comparison, d):
-    if (comparison['less'] == 1):
-        d['is_value']['less'] = d['is_value']['less'] + (0.005)
-        d['is_value']['greater'] = d['is_value']['greater'] - ((0.005)/6)
-        d['is_value']['plus1'] = d['is_value']['plus1'] - ((0.005)/6)
-        d['is_value']['minus1'] = d['is_value']['minus1'] - ((0.005)/6)
-        d['is_value']['even'] = d['is_value']['even'] - ((0.005)/6)
-        d['is_value']['odd'] = d['is_value']['odd'] - ((0.005)/6)
-        d['is_value']['royal'] = d['is_value']['royal'] - ((0.005)/6)
-        
-    if (comparison['greater'] == 1):
-        d['is_value']['greater'] = d['is_value']['greater'] + (0.005)
-        d['is_value']['less'] = d['is_value']['less'] - ((0.005)/6)
-        d['is_value']['plus1'] = d['is_value']['plus1'] - ((0.005)/6)
-        d['is_value']['minus1'] = d['is_value']['minus1'] - ((0.005)/6)
-        d['is_value']['even'] = d['is_value']['even'] - ((0.005)/6)
-        d['is_value']['odd'] = d['is_value']['odd'] - ((0.005)/6)
-        d['is_value']['royal'] = d['is_value']['royal'] - ((0.005)/6)
-        
-    if (comparison['plus1'] == 1):
-        d['is_value']['plus1'] = d['is_value']['plus1'] + (0.005)
-        d['is_value']['greater'] = d['is_value']['greater'] - ((0.005)/6)
-        d['is_value']['less'] = d['is_value']['less'] - ((0.005)/6)
-        d['is_value']['minus1'] = d['is_value']['minus1'] - ((0.005)/6)
-        d['is_value']['even'] = d['is_value']['even'] - ((0.005)/6)
-        d['is_value']['odd'] = d['is_value']['odd'] - ((0.005)/6)
-        d['is_value']['royal'] = d['is_value']['royal'] - ((0.005)/6)
-        
-    if (comparison['minus1'] == 1):
-        d['is_value']['minus1'] = d['is_value']['minus1'] + (0.005)
-        d['is_value']['greater'] = d['is_value']['greater'] - ((0.005)/6)
-        d['is_value']['plus1'] = d['is_value']['plus1'] - ((0.005)/6)
-        d['is_value']['less'] = d['is_value']['less'] - ((0.005)/6)
-        d['is_value']['even'] = d['is_value']['even'] - ((0.005)/6)
-        d['is_value']['odd'] = d['is_value']['odd'] - ((0.005)/6)
-        d['is_value']['royal'] = d['is_value']['royal'] - ((0.005)/6)
-    return d
-
-import card_generator
-def main():
-    d = {'is_suit':{'D':0.25,'H':0.25,'S':0.25,'C':0.25},'is_value':{'even':0.14,'odd':0.14,'royal':0.14,'less':0.14,'greater':0.14,'plus1':0.14,'minus1':0.14},'is_color':{'R':0.5,'B':0.5}}
-    previous=[]
-    current={}
-    flag=0
-    scoring = 0
-    count_iter=0
-    x=raw_input("Is the God entering any cards?(Y/N)")
-    if(x=='Y'):
-        more='Y'
-        card=""
-        while more=='Y':
-            l.append(raw_input("Enter card as 3H,4B etc"))
-            more=raw_input("Do you wish to enter more?(Y/N)")
-        for i in l:
-            previous.append(i)
-            correct.append(i)
-        if len(previous)<3:
-            x=len(correct)
-            while len(previous)!=3:
-                card=card_generator.random_card()
-                print card
-                flag=correct_wrong(card,flag,scoring)            
-                if len(correct)>x:
-                    l.append(card)
-                    previous.append(card)
-                    x+=1                    
-    #god has not given any card
-    elif x=='N':
-        if len(l)==0:
-            card=""
-            previous=[]
-            #correct will b empty
-            x=len(correct)
-            #3 correct random cards taken
-            while len(previous)<=3:
-                card=card_generator.random_card()
-                print card
-                flag=correct_wrong(card,flag,scoring)
-                if len(correct)>x:
-                    l.append(card)
-                    previous.append(card)
-                    x+=1
-    previous2=extraction(previous[0])
-    previous1=extraction(previous[1])
-    current=extraction(previous[2])
-    a1 = alternate(previous2, previous1, current)
-    for i in range(0,200):
-        count_iter=count_iter+1
-        comparison = comparator(previous2, previous1, current)
-    
-        p1 = probabilityCard(previous2,d)
-        p2 = probabilityCard(previous1,p1)
-        p3 = probabilityCard(current,p2)
-        p = probabilityCompare(comparison, p3)
-        a1 = alternate(previous2, previous1, current)
-        print a1
-        altPos = alternatePos(previous2, previous1, current)
-        #s=setRule(p,a1)
-        #print "setrule",s
-        cb=CurrentBestHypothesis.scientist(p,flag,correct,a1,count_iter)
-        if len(cb)=='None':
-            print "We found the above rule! Yayy!"
-            print "BoardState",boardState()
-            x=raw_input("Is the rule correct?(Y/N)")
-            if x == 'N':
-               scoring = score(scoring ,15)
-            break
-        if len(a1)==0:
-            card = card_generator.card_generator(cb[0],cb[1],correct)
-            print "card",card
-            flag=correct_wrong(card,flag,scoring)
-            card1 = extraction(card)
-            previous2 = previous1
-            previous1 = current
-            current = card1
-        else:
-            card=alternateCardGen.alternateCard(correct)
-            print "card",card
-            flag=correct_wrong(card,flag,scoring)
-            card1 = extraction(card)
-            previous2 = previous1
-            previous1 = current
-            current = card1
-       
-def play(card,flag):
-    print card
-    flag=correct_wrong(card,flag)
-    if flag==0:
-        print "BoardState",boardState()
-        return False
-    else:
-        print "BoardState",boardState()
-        return True
+def rule():
+    return grule
 
 def boardState():
     return board_list
-    
-if __name__ == "__main__":
-    main()
+
+def generate_random_card():
+    values = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K"]
+    suits = ["S", "H", "D", "C"]
+    return values[randint(0, len(values)-1)] + suits[randint(0, len(suits)-1)]
+
+class Player(object):
+    def __init__(self):
+        self.hand = [generate_random_card() for i in range(14)]
+
+    def play(self, hypothesis,cards):
+        """
+        'cards' is a list of three valid cards to be given by the dealer at the beginning of the game.
+        Your scientist should play a card out of its given hand OR return a rule, not both.
+        'game_ended' parameter is a flag that is set to True once the game ends. It is False by default
+        """
+        print "player play"
+        return scientist(hypothesis,correct[(len(correct)-3):len(correct)], self.hand, game_ended)
+
+
+class Adversary(object):
+    def __init__(self):
+        self.hand = [generate_random_card() for i in range(14)]
+
+    def play(self):
+        """
+        'cards' is a list of three valid cards to be given by the dealer at the beginning of the game.
+        Your scientist should play a card out of its given hand.
+        """
+        # Return a rule with a probability of 1/14
+        prob_list = [i for i in range(14)]
+        prob = prob_list[randint(0, 13)]
+        if prob == 4:
+            # Generate a random rule
+            rule = ""
+            conditions = ["equal", "greater"]
+            properties = ["suit", "value"]
+            cond = conditions[randint(0,len(properties)-1)]
+            if cond == "greater":
+                prop = "value"
+            else:
+                prop = properties[randint(0,len(properties)-1)]
+
+            rule += cond + "(" + prop + "(current), " + prop + "(previous)), "
+            return rule[:-2]+")"
+        else:
+            return self.hand[randint(0, len(self.hand)-1)]
+
+
+# The players in the game
+player = Player()
+adversary1 = Adversary()
+adversary2 = Adversary()
+adversary3 = Adversary()
+
+# Set a rule for testing
+rule = "if(equal(color(current),B),True, False)"
+#setRule(rule)
+
+# The three cards that adhere to the rule
+cards = ["4S", "3S", "4C"]
+for i in cards:
+    correct.append(i)
+"""
+In each round scientist is called and you need to return a card or rule.
+The cards passed to scientist are the last 3 cards played.
+Use these to update your board state.
+"""
+hypothesis=perform(cards)
+flag=0
+tuple1=()
+list1=[]
+for round_num in range(14):
+    # Each player plays a card or guesses a rule
+    try:
+        #Player 1 plays
+        player_card_rule = player.play(hypothesis,cards)
+        if is_card(player_card_rule) and flag<2:
+            del cards[0]
+            cards.append(player_card_rule)
+            test=correct[(len(correct)-2):len(correct)]
+            test.append(player_card_rule)
+            p=parse(rule).evaluate(test)
+            print "evaluate",p
+            if p==True or p=='True':
+                flag+=1
+                if len(tuple1)>0:
+                    list3=list(tuple1)
+                    list3.append(list1)
+                    tuple1=tuple(list3)
+                    #tuple1+=list1
+                    board_list.append(tuple1)
+                    list1=[]
+                tuple1=()
+                tuplelist=[]
+                tuplelist.append(player_card_rule)
+                tuple1=tuple(tuplelist)
+                print "player correct",correct, "flag",flag
+                correct.append(player_card_rule)
+            else:
+                flag=0
+                wrong.append(player_card_rule)
+                print "player wrong",wrong
+                if len(tuple1)>0:
+                    list1.append(player_card_rule)
+                hypothesis=prune(hypothesis,correct)
+                print "adv",hypothesis
+        else:
+            print "OUR RULE:", "if(",hypothesis,",True)"
+            print  "WITH ALTERNATE", checkAlternate.CheckAlternate(Main.wrong,hypothesis)
+            print  "these are wrong" ,Main.wrong
+            print  "these are CORRECT", Main.correct
+            print boardState()
+            if rule()==player_card_rule:
+                score_list[0]=-25
+            dealer=0
+            raise Exception('')
+
+        #Adversary 1 plays
+        ad1_card_rule = adversary1.play()
+        if is_card(ad1_card_rule):
+            del cards[0]
+            cards.append(ad1_card_rule)
+            test=correct[(len(correct)-2):len(correct)]
+            test.append(ad1_card_rule)
+            p=parse(rule).evaluate(test)
+            print "ad1",ad1_card_rule
+            print "evaluate",p
+            if p==True or p=='True':
+                correct.append(ad1_card_rule)
+                print "adversary1",correct
+                if len(tuple1)>0:
+                    list3=list(tuple1)
+                    list3.append(list1)
+                    tuple1=tuple(list3)
+                    #tuple1+=list1
+                    board_list.append(tuple1)
+                    list1=[]
+                tuple1=()
+                tuplelist=[]
+                tuplelist.append(ad1_card_rule)
+                tuple1=tuple(tuplelist)
+                hypothesis=prune(hypothesis,correct)
+                print "ad1 prune",hypothesis
+            else:
+                wrong.append(ad1_card_rule)
+                print "ad1 wrong",wrong
+                if len(tuple1)>0:
+                    list1.append(ad1_card_rule)
+                #hypothesis=prune(hypothesis,correct)
+                #print cards
+        else:
+            print "saale 1 ko mil gya",boardState(),"boardstate",ad1_card_rule
+            print "bechara hamara rule","if(",hypothesis,",True)"
+            if rule()==ad1_card_rule:
+                score_list[1]=-25
+            dealer=1
+            raise Exception('')
+
+        #Adversary 2 plays
+        ad2_card_rule = adversary2.play()
+        if is_card(ad2_card_rule):
+            del cards[0]
+            cards.append(ad2_card_rule)
+            test=correct[(len(correct)-2):len(correct)]
+            test.append(ad2_card_rule)
+            p=parse(rule).evaluate(test)
+            print "ad2",ad2_card_rule
+            print "evaluate",p
+
+            if p==True or p=='True':
+                correct.append(ad2_card_rule)
+                print "adversary1",correct
+                hypothesis=prune(hypothesis,correct)
+                print "ad1 prune",hypothesis
+                if len(tuple1)>0:
+                    list3=list(tuple1)
+                    list3.append(list1)
+                    tuple1=tuple(list3)
+                    #tuple1+=list1
+                    board_list.append(tuple1)
+                    list1=[]
+                tuple1=()
+                tuplelist=[]
+                tuplelist.append(ad2_card_rule)
+                tuple1=tuple(tuplelist)
+
+            else:
+                wrong.append(ad2_card_rule)
+                if len(tuple1)>0:
+                    list1.append(ad2_card_rule)
+
+                #print cards
+        else:
+            print "saale 2 ko mil gya",boardState(),"boardstate",ad2_card_rule
+            print "bechara hamara rule","if(",hypothesis,",True)"
+            if rule()==ad2_card_rule:
+                score_list[2]=-25
+            dealer=2
+            raise Exception('')
+
+        #Adversary 3 plays
+        ad3_card_rule = adversary3.play()
+        if is_card(ad3_card_rule):
+            del cards[0]
+            cards.append(ad3_card_rule)
+            test=correct[(len(correct)-2):len(correct)]
+            test.append(ad3_card_rule)
+            p=parse(rule).evaluate(test)
+            print "ad3",ad3_card_rule
+            if p==True or p=='True':
+                correct.append(ad3_card_rule)
+                hypothesis=prune(hypothesis,correct)
+                print "ad3 prune",hypothesis
+                print "evaluate",p
+                if len(tuple1)>0:
+                    list3=list(tuple1)
+                    list3.append(list1)
+                    tuple1=tuple(list3)
+                    #tuple1+=list1
+                    board_list.append(tuple1)
+                    list1=[]
+                tuple1=()
+                tuplelist=[]
+                tuplelist.append(ad3_card_rule)
+                tuple1=tuple(tuplelist)
+
+            else:
+                wrong.append(ad3_card_rule)
+                if len(tuple1)>0:
+                    list1.append(ad3_card_rule)
+                #print cards
+        else:
+            print "saale 3 ko mil gya",boardState(),"boardstate",ad3_card_rule
+            print "bechara hamara rule","if(",hypothesis,",True)"
+            if rule()==ad3_card_rule:
+                score_list[3]=-25
+            dealer=3
+            raise Exception('')
+
+    except:
+        game_ended = True
+        break
+
+# Everyone has to guess a rule
+#rule_player = player.play(cards)
+
+# Check if the guessed rule is correct and print the score
+#print score(dealer)
