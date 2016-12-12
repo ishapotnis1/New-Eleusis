@@ -1,14 +1,9 @@
+#  (is_royal(current), False)
+import re
 correct=[]
 wrong=["4H","5S"]
 prev="5H"
 import pyparsing # make sure you have this installed
-
-
-
-Checker={}
-Checker["suit"]=["H","S","C","D"]
-Checker["Color"]=["R","B"]
-Checker["Value"]=[1,2,3,4,5,6,7,8,9,10,11,12,13]
 
 map={}
 map['A']='1'
@@ -27,31 +22,16 @@ def parseRule(rule):
  for x in list:
   list2=list2+x.split(")")
  #print list2
-
-
-
-
-
  for x in list2:
   list3=list3+x.split(",")
-
-
-
  for x in list3:
   if x=="":
    list3.remove(x)
-
  for x in list3:
   list4 = list4 + x.split(" ")
-
  for x in list4:
   if x=="":
    list4.remove(x)
-
-
-
-
-   print list4
    return list4
 
 
@@ -111,26 +91,29 @@ def extract(attribute,card):
  return
 
 
+
+def findRule(hypothesis):
+ list=hypothesis.split("),")
+ return list
+
+
+
+
 def checkCard(card,list,hypothesis,prev,current):
 
 
   allowedvalues=[]
   allowedsuits=[]
+  even = ['2', '4', '6', '8', '10', 'Q']
+  odd = ['A', '3', '5', '7', '9', 'J', 'K']
   if "even" in list:
    allowedvalues=['2','4','6','8','10','Q']
-   even = ['2', '4', '6', '8', '10', 'Q']
 
   if "odd" in list:
    allowedvalues = ['A', '3', '5', '7', '9', 'J','K']
-   odd = ['A', '3', '5', '7', '9', 'J', 'K']
 
   if "Royal" in list:
    allowedsuits=['A','Q','J','K']
-
-
-
-
-
 
   suitcurrent=extract("Suit",card)
   valuecurrent=extract("Value",card)
@@ -144,23 +127,8 @@ def checkCard(card,list,hypothesis,prev,current):
    valueprev = extract("Value", prev)
    colorprev = extract("Color", prev)
 
-
-
-  """for x,y in list.iteritems():
-   if x=="equal":
-    if y.get(0)=="Suit":
-     if suit in y:
-      return  x+y
-
-    if y.get(0)=="Color":
-     if color in y:
-      return x+y
-
-    if y.get(0) == "Value":
-     if value in y:
-      return x+y"""
   if suitcurrent in allowedsuits:
-   hypothesis=hypothesis+" and alternate  "+ suitcurrent
+   hypothesis=hypothesis+ "AND "+"equal(suit(current),"+ ","+suitcurrent+"))"
 
   if valuecurrent in allowedvalues:
    x=""
@@ -168,13 +136,10 @@ def checkCard(card,list,hypothesis,prev,current):
     x="even"
    if valuecurrent in odd:
     x="odd"
-   hypothesis = hypothesis + " and alternate " + x
+   hypothesis = hypothesis + "AND "+x
 
   if colorcurrent in list:
-   hypothesis = hypothesis + " and alternate " + colorcurrent
-
-
-
+   hypothesis = hypothesis +"and "+ "equal(color(current),"+ ","+colorcurrent+"))"
 
   return hypothesis
 
@@ -183,14 +148,43 @@ def checkCard(card,list,hypothesis,prev,current):
 def CheckAlternate(wrong,hypothesis):
 
  list=parseRule(hypothesis)
-
-
  for x in wrong:
   hypothesis=checkCard(x,list,hypothesis,"2H","3H")
 
  return hypothesis
 
-print  CheckAlternate(wrong,"(equal(color,R),equal(color,B))")
+#print  CheckAlternate(wrong,"( orf(equal(color(current),B),greater(prev,current)) ,True)")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
