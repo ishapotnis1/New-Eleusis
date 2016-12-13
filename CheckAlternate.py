@@ -9,6 +9,12 @@ map['A']='1'
 map['J']='11'
 map['Q']='12'
 map['K']='13'
+threshold={}
+threshold['Suit']=0
+threshold['Color']=0
+threshold['Value.odd']=0
+threshold['Value.even']=0
+threshold['Royal']=0
 
 
 def parseRule(rule):
@@ -143,12 +149,19 @@ def checkCard(card,list,hypothesis):
   return hypothesis
 
 
-def findSimilarity(card1,card2,list,hypothesis,correct):
+def findSimilarity(cards,card1,card2,list,hypothesis,correct,threshold):
     allowedvalues = []
     allowedsuits = []
     allowedcolors = []
 
-    alternatehypothesis=""
+    alternatehypothesis={}
+    alternatehypothesis['Suit']=""
+    alternatehypothesis['Value.even']=""
+    alternatehypothesis['Value.odd']=""
+    alternatehypothesis['Color']=""
+    alternatehypothesis['Royal'] = ""
+
+
     even = ['2', '4', '6', '8', '10', 'Q']
     odd = ['A', '3', '5', '7', '9', 'J', 'K']
     if "even" in list:
@@ -174,80 +187,64 @@ def findSimilarity(card1,card2,list,hypothesis,correct):
     colorprevious2 = extract("Color", card2)
 
     if suitcurrent==suitprevious2:
-     if keephypothesis(suitcurrent,"Suit",correct,list)==True:
-      alternatehypothesis = alternatehypothesis + "equal(suit(previous2)" + "," + suitcurrent + "))" +"and " +"equal(suit(current)" + "," + suitcurrent + "))"
+     threshold['Suit']=threshold['Suit']+1
+     alternatehypothesis['Suit'] = alternatehypothesis['Suit'] + "(equal(suit(previous2)" + "," + suitcurrent + "))" +"," +"equal(suit(current)" + "," + suitcurrent + ")))"
 
     if valuecurrent in allowedvalues and valueprevious2 in allowedvalues:
      if valuecurrent in even and valueprevious2 in even:
-      if keephypothesis("odd", "Value",correct)==True:
-        alternatehypothesis = alternatehypothesis+ "equal(value(previous2)" + "," + "even" + "))" + "and " + "equal(value(current)" + "," + "even" + "))"
+
+      threshold['Value'] =   threshold['Value']+1
+      alternatehypothesis['Value.even'] = alternatehypothesis['Value.even']+ "(equal((even(previous2)" +  ',' + "equal(even(current)))"
 
      if valuecurrent in odd and valueprevious2 in odd:
-      if keephypothesis("even", "Value",correct)==True:
-        alternatehypothesis = alternatehypothesis + "equal(value(previous2)" + "," + "odd" + "))" + "and " + "equal(value(current)" + "," + "odd" + "))"
+      threshold['Value.odd'] = threshold['Value.odd'] + 1
+      alternatehypothesis['Value.odd'] = alternatehypothesis['Value.odd']+ "(equal((odd(previous2)" +  ',' + "equal(odd(current)))"
 
     if valueprevious2 in even and valuecurrent in even:
-     if keephypothesis("even", "Value",correct)==True:
-      alternatehypothesis =alternatehypothesis + "equal(value(previous2)" + "," + "even" + "))" + "and " + "equal(value(current)" + "," + "even" + "))"
-
+     threshold['Value.even'] = threshold['Value.even'] + 1
+     alternatehypothesis['Value.even'] = alternatehypothesis['Value.even'] +"(equal((even(previous2)" +  ',' + "equal(even(current)))"
     if valueprevious2 in odd and valuecurrent in odd:
-     if keephypothesis("odd", "Value",correct)==True:
-      alternatehypothesis = alternatehypothesis +"equal(value(previous2)" + "," + "odd" + "))" + "and " + "equal(value(current)" + "," + "odd" + "))"
+     threshold['Value.odd'] = threshold['Value.odd'] + 1
+     alternatehypothesis['Value.odd'] = alternatehypothesis['Value.odd']+"(equal((odd(previous2)" +  ',' + "equal(odd(current)))"
 
     if colorcurrent==colorprevious2:
-     if keephypothesis(colorcurrent, "Color",correct)==True:
-      print "imhere"
-      alternatehypothesis =alternatehypothesis + "equal(color(previous2)" + "," + colorcurrent + "))" + "and " + "equal(color(current)" + "," + colorcurrent + "))"
+     threshold['Color'] = threshold['Color'] + 1
+     alternatehypothesis['Color'] = alternatehypothesis['Color']+ "(equal(color(previous2)" + "," + colorcurrent + "))" + "," + "equal(color(current)" + "," + colorcurrent + ")))"
 
     if colorcurrent in allowedcolors and  colorprevious2 in allowedcolors:
      if colorcurrent==colorprevious2:
-      if keephypothesis(colorcurrent, "Color",correct)==True:
-       alternatehypothesis = alternatehypothesis +"equal(color(previous2)" + "," + colorcurrent + "))" + "and " + "equal(value(current)" + "," + colorcurrent + "))"
+      threshold['Color'] = threshold['Color'] + 1
+      alternatehypothesis['Color'] = alternatehypothesis['Color'] +"(equal(color(previous2)" + "," + colorcurrent + "))" + ", " + "equal(value(current)" + "," + colorcurrent + ")))"
 
     if suitcurrent in allowedsuits and suitprevious2 in allowedsuits:
-     if keephypothesis(suitcurrent, "Suit",correct)==True:
-      alternatehypothesis = alternatehypothesis +"equal(suit(previous2)" + "," + suitcurrent + "))" + "and " + "equal(suit(current)" + "," + suitcurrent + "))"
-    hypothesis=hypothesis+ "alternate " + alternatehypothesis
-    return alternatehypothesis
-
-
-def keephypothesis(x,attribute,correct):
-
- return True
- """even = ['2', '4', '6', '8', '10', 'Q']
- odd = ['A', '3', '5', '7', '9', 'J', 'K']
-
- if attribute=="Suit":
-  for card in correct:
-   s=extract(attribute, card)
-   if x!=s:
-    return False
- if attribute=="Color":
-  for card in correct:
-    s = extract(attribute,card)
-    if x != s:
-     return False
-
- if attribute=="Value":
-  s = extract(attribute, card)
-  for card in correct:
-   if x=="even":
-    if s not in even:
-     return False
-    if x=="odd":
-     if x == "even":
-      if s not in odd:
-        return False
-
-  return"""
+     threshold['Suit'] = threshold['Suit'] + 1
+     alternatehypothesis['Suit'] = alternatehypothesis['Suit'] +"(equal(suit(previous2)" + "," + suitcurrent + "))" + "," + "equal(suit(current)" + "," + suitcurrent + ")))"
 
 
 
+    alter=""
+
+    if len(cards)>6:
+     if threshold['Suit']>=2:
+      alter=alter+","+alternatehypothesis['Suit']
+     if threshold['Color'] >= 2:
+      alter = alter +","+ alternatehypothesis['Color']
+     if threshold['Value.odd']>=2:
+      alter = alter +","+  alternatehypothesis['Value.odd']
+     if threshold['Value.even'] >= 2:
+      alter = alter  +","+  alternatehypothesis['Value.even']
+     if  threshold['Royal'] >= 2:
+      alter = alter +","+ alternatehypothesis['Royal']
+
+    else:
+     alter=alternatehypothesis['Suit'] +","+ alternatehypothesis['Color'] +","+  alternatehypothesis['Value.odd'] +","+ alternatehypothesis['Value.even'] +","+ alternatehypothesis['Royal']
+
+    alter="andf"+'('+alter+')'
+    print threshold
 
 
 
-
-
+    return alter
 
 
 
@@ -267,15 +264,18 @@ def CheckAlternate(wrong,hypothesis,correct,state):
 
 
 
- for i  in range(len(state)):
-  if allcards[i] in  correct and allcards[i+2] in correct:
-    hypothesis=findSimilarity(allcards[i],allcards[i+2],list,hypothesis,correct)
+ for i  in range(0,len(state)):
+  if i+2<len(state):
+   if allcards[i] in  correct and allcards[i+2] in correct:
+    hypothesis=findSimilarity(state,allcards[i],allcards[i+2],list,hypothesis,correct,threshold)
 
-  return hypothesis
+
+
+ return hypothesis
 
 wrong=[]
-correct=['4S','10H','2S','9H']
-state=['4S','10H','2S','9H']
+correct=['4S','2S','4S','2S','8S']
+state=['4S','10H','2S','9H','4S','10D','2S','9D','8S']
 
 print CheckAlternate(wrong,"(orf(greater(prev,current)))",correct,state)
 
