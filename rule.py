@@ -6,6 +6,13 @@ def generate_random_cards():
     suits = ["S", "H", "D", "C"]
     return values[randint(0, len(values)-1)] + suits[randint(0, len(suits)-1)]
 
+def play(g_rule,correct):   #returns whether card is legal or not
+      test=correct[(len(correct)-2):len(correct)]
+      test.append(player_card_rule)
+      p=parse(g_rule).evaluate(test)
+      return p
+    
+    
 def scientist(data, cards, hand, game_ended):
     card_dict = []
     current_hand = [hand[0], cards[2], cards[1]]
@@ -75,7 +82,7 @@ def scientist(data, cards, hand, game_ended):
     #print max(best_dict.values())
     for k,v in best_dict.items():
         if v==max(best_dict.values()):
-            print "card gen",k
+            #print "card gen",k
             selected=k
             break
     #print "after"
