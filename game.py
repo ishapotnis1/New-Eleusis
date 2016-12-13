@@ -8,11 +8,8 @@ from prune import *
 global game_ended
 game_ended = False
 board_list=[]
-score_list={}
+our_score=0
 player_card_rule=""
-ad3_card_rule=""
-ad2_card_rule=""
-ad1_card_rule=""
 grule=""
 
 
@@ -24,21 +21,16 @@ def rule():
     return grule
 
 def score(dealer):
-    print "dealer",dealer
-    if (rule()==player_card_rule):
-        print "us",player_card_rule
-        score_list[0]+=(-75)
-    if (rule()==ad1_card_rule):
-        print "1",ad1_card_rule
-        score_list[1]+=(-75)
-    if (rule()==ad2_card_rule):
-        print "2",ad2_card_rule
-        score_list[2]+=(-75)
-    if (rule()==ad3_card_rule):
-        print "3",ad3_card_rule
-        score_list[3]+=(-75)
-    print "list",score_list
-    return score_list[0]
+    global our_score
+    i=0
+    decision=True
+    loop=len(correct)-(len(correct)%3)
+    while i+3<loop:
+        decision=parse(g_rule).evaluate(correct[i:i+3])
+        i=i+3
+    if(decision):
+        our_score+=-75
+    return our_score
 
 def boardState():
     return board_list
@@ -73,22 +65,23 @@ class Adversary(object):
         """
         # Return a rule with a probability of 1/14
         prob_list = [i for i in range(14)]
-        prob = prob_list[randint(0, 13)]
-        if prob == 4:
-            # Generate a random rule
-            g_rule = ""
-            conditions = ["equal", "greater"]
-            properties = ["suit", "value"]
-            cond = conditions[randint(0,len(properties)-1)]
-            if cond == "greater":
-                prop = "value"
-            else:
-                prop = properties[randint(0,len(properties)-1)]
+        for i in prob_list:
+            prob=i
+            if prob == 10:
+                # Generate a random rule
+                rule = ""
+                conditions = ["equal", "greater"]
+                properties = ["suit", "value"]
+                cond = conditions[randint(0,len(properties)-1)]
+                if cond == "greater":
+                    prop = "value"
+                else:
+                    prop = properties[randint(0,len(properties)-1)]
 
-            g_rule += cond + "(" + prop + "(current), " + prop + "(previous)), "
-            return g_rule[:-2]+")"
-        else:
-            return self.hand[randint(0, len(self.hand)-1)]
+                rule += cond + "(" + prop + "(current), " + prop + "(previous)), "
+                return rule[:-2]+")"
+            else:
+                return self.hand[randint(0, len(self.hand)-1)]
 
 
 # The players in the game
@@ -98,11 +91,11 @@ adversary2 = Adversary()
 adversary3 = Adversary()
 
 # Set a rule for testing
-g_rule = "if(equal(color(current),B),True, False)"
+g_rule = "if(andf(even(current),equal(color(current),B)), True,False)"
 setRule(g_rule)
 
 # The three cards that adhere to the rule
-cards = ["4S", "5S", "8C"]
+cards = ["4S", "6S", "8S"]
 for i in cards:
     correct.append(i)
 """
@@ -115,16 +108,14 @@ print "initial",hypothesis
 flag=0
 tuple1=()
 list1=[]
-dealer=0
-for i in range(0,4):
-    score_list[i]=0
+player1=1
 for round_num in range(14):
     # Each player plays a card or guesses a rule
     try:
         #Player 1 plays
         player_card_rule = player.play(hypothesis,cards)
         print player_card_rule,flag
-        if is_card(player_card_rule) and flag<3:
+        if is_card(player_card_rule) and flag<6:
             del cards[0]
             cards.append(player_card_rule)
             test=correct[(len(correct)-2):len(correct)]
@@ -155,12 +146,10 @@ for round_num in range(14):
                 hypothesis=prune(hypothesis,correct)
                 print "adv",hypothesis
         else:
-            print "OUR RULE:", "if(",hypothesis,",True)"
+            print "OUR RULE:", hypothesis
             print boardState()
-            if rule()==player_card_rule:
-                score_list[0]=-25
-                print score_list
-            dealer=0
+            our_score=-25
+            player1=1
             raise Exception('')
 
         #Adversary 1 plays
@@ -199,10 +188,7 @@ for round_num in range(14):
                 #print cards
         else:
             print "saale 1 ko mil gya",boardState(),"boardstate",ad1_card_rule
-            print "bechara hamara rule","if(",hypothesis,",True)"
-            if rule()==ad1_card_rule:
-                score_list[1]=-25
-            dealer=1
+            print "bechara hamara rule",hypothesis
             raise Exception('')
 
         #Adversary 2 plays
@@ -242,10 +228,7 @@ for round_num in range(14):
                 #print cards
         else:
             print "saale 2 ko mil gya",boardState(),"boardstate",ad2_card_rule
-            print "bechara hamara rule","if(",hypothesis,",True)"
-            if rule()==ad2_card_rule:
-                score_list[2]=-25
-            dealer=2
+            print "bechara hamara rule",hypothesis
             raise Exception('')
 
         #Adversary 3 plays
@@ -283,9 +266,6 @@ for round_num in range(14):
         else:
             print "saale 3 ko mil gya",boardState(),"boardstate",ad3_card_rule
             print "bechara hamara rule","if(",hypothesis,",True)"
-            if rule()==ad3_card_rule:
-                score_list[3]=-25
-            dealer=3
             raise Exception('')
 
     except:
@@ -293,8 +273,10 @@ for round_num in range(14):
         break
 
 # Everyone has to guess a rule
+if round_num==13:
+    game_ended=True
 rule_player = player.play(hypothesis,cards)
-print "rule","if(",rule_player,",True)"
+print rule_player
 # Check if the guessed rule is correct and print the score
-print "score",score(dealer)
+print "score",score(player1)
 #print rule()
