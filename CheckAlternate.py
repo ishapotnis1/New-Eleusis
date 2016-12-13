@@ -15,7 +15,7 @@ def parseRule(rule):
  list3 = []
  list4=[]
  list=rule.split("(")
- print list
+ #print list
 
  for x in list:
   list2=list2+x.split(")")
@@ -225,10 +225,32 @@ def findSimilarity(cards,card1,card2,list,hypothesis,correct,threshold):
 
 
     else:
-     alter=alternatehypothesis['Suit'] +","+ alternatehypothesis['Color'] +","+  alternatehypothesis['Value.odd'] +","+ alternatehypothesis['Value.even'] +","+ alternatehypothesis['Royal']
+     if len(alter) == 0:
+      alter = alternatehypothesis['Suit']
+     else:
+      alter = alter + "," + alternatehypothesis['Suit']
+     if len(alter) == 0:
+      alter = alternatehypothesis['Color']
+     else:
+      alter = alter + "," + alternatehypothesis['Color']
+     if len(alter) == 0:
+      alter = alternatehypothesis['Value.odd']
+     else:
+      alter = alter + "," + alternatehypothesis['Value.odd']
+     if len(alter) == 0:
+      alter = alternatehypothesis['Value.even']
+     else:
+      alter = alter + "," + alternatehypothesis['Value.even']
+     if len(alter) == 0:
+      alter = alternatehypothesis['Royal']
+     else:
+      alter = alter + "," + alternatehypothesis['Royal']
 
+    if len(alter)==0:
+     return alter
     alter="andf"+'('+alter+')'
-    print threshold
+
+    #print threshold
     return alter
 
 #Main function which runs "findSimilarity on the list of all and correct cards
@@ -241,15 +263,6 @@ def CheckAlternate(wrong,hypothesis,correct,state):
    if allcards[i] in  correct and allcards[i+2] in correct:
     hypothesis=findSimilarity(state,allcards[i],allcards[i+2],list,hypothesis,correct,threshold)
  return hypothesis
-
-wrong=[]
-correct=['JD','JS','KS','KS','QS','JD','9D']
-state=['JS','10D','JD','9D','KS','10D','QS','9D','JD']
-
-print CheckAlternate(wrong,"(orf(greater(prev,current)))",correct,state)
-
-#print evaluate(CheckAlternate(wrong,"(orf(greater(prev,current),notf(is_royal(current))))",correct,state))
-
 
 
 
