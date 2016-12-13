@@ -5,10 +5,7 @@ import re
 import pyparsing # make sure you have this installed
 
 map={}
-map['A']='1'
-map['J']='11'
-map['Q']='12'
-map['K']='13'
+
 threshold={}
 threshold['Suit']=0
 threshold['Color']=0
@@ -76,10 +73,8 @@ def extract(attribute,card):
 
  if len(card)<3:
   suit=card[1]
-  if card[0]!='A' and card[0]!='J'and card[0]!='Q' and card[0]!='K':
-   Value=card[0]
-  else:
-   Value=map[card[0]]
+  Value=card[0]
+
  else:
      Value=card[0]+card[1]
      suit=card[2]
@@ -96,7 +91,6 @@ def extract(attribute,card):
   return suit
 
  return
-
 
 
 
@@ -161,7 +155,7 @@ def findSimilarity(cards,card1,card2,list,hypothesis,correct,threshold):
     alternatehypothesis['Color']=""
     alternatehypothesis['Royal'] = ""
 
-
+    Royal=['J','K','Q','A']
     even = ['2', '4', '6', '8', '10', 'Q']
     odd = ['A', '3', '5', '7', '9', 'J', 'K']
     if "even" in list:
@@ -181,6 +175,8 @@ def findSimilarity(cards,card1,card2,list,hypothesis,correct,threshold):
     suitcurrent = extract("Suit", card1)
     valuecurrent = extract("Value", card1)
     colorcurrent = extract("Color", card1)
+    print  valuecurrent
+
 
     suitprevious2 = extract("Suit", card2)
     valueprevious2 = extract("Value", card2)
@@ -220,6 +216,9 @@ def findSimilarity(cards,card1,card2,list,hypothesis,correct,threshold):
      threshold['Suit'] = threshold['Suit'] + 1
      alternatehypothesis['Suit'] = alternatehypothesis['Suit'] +"(equal(suit(previous2)" + "," + suitcurrent + "))" + "," + "equal(suit(current)" + "," + suitcurrent + ")))"
 
+    if valuecurrent in Royal and valueprevious2 in Royal:
+     threshold['Royal'] = threshold['Royal'] + 1
+     alternatehypothesis['Royal'] = alternatehypothesis['Royal'] +"(is_Royal(suit(previous2)" + "," + "Royal" + "))" + "," + "equal(is_Royal(current)" + "," + "Royal" + ")))"
 
 
     alter=""
@@ -274,8 +273,8 @@ def CheckAlternate(wrong,hypothesis,correct,state):
  return hypothesis
 
 wrong=[]
-correct=['4S','2S','4S','2S','8S']
-state=['4S','10H','2S','9H','4S','10D','2S','9D','8S']
+correct=['JD','JS','KS','KS','QS','JD','9D']
+state=['JS','10D','JD','9D','KS','10D','QS','9D','JD']
 
 print CheckAlternate(wrong,"(orf(greater(prev,current)))",correct,state)
 
