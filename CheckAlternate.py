@@ -1,11 +1,7 @@
 #  (is_royal(current), False)
 import re
 
-
-import pyparsing # make sure you have this installed
-
-map={}
-
+# to validate the the number of times a case occurs
 threshold={}
 threshold['Suit']=0
 threshold['Color']=0
@@ -13,9 +9,8 @@ threshold['Value.odd']=0
 threshold['Value.even']=0
 threshold['Royal']=0
 
-
+# to convert the hypothesis into a list
 def parseRule(rule):
-
  list2 = []
  list3 = []
  list4=[]
@@ -38,7 +33,7 @@ def parseRule(rule):
 
  return list4
 
-
+# to convert into a dictionary of rules
 def breakrules(list):
  flag=0
  dictionaryofrules={}
@@ -53,20 +48,13 @@ def breakrules(list):
    if x=="equal" or x=="greater" or x=="less":
     rule=x
     listTemp=[]
-
-
-
-
    else:
     listTemp.append(x)
     dictionaryofrules[rule]=listTemp
 
   return dictionaryofrules
 
-
-
-
-
+# to extract the attributes of a card , can be "Suit", "Value" or "Color"
 def extract(attribute,card):
  color="M"
  suit="a"
@@ -82,25 +70,16 @@ def extract(attribute,card):
   color='R'
  else:
   color='B'
-
  if attribute == "Value":
   return Value
  if attribute == "Color":
   return  color
  if attribute == "Suit":
   return suit
-
  return
 
-
-
-
-
-
-
+#to check overlapping cases with the hypothesis
 def checkCard(card,list,hypothesis):
-
-
   allowedvalues=[]
   allowedsuits=[]
   even = ['2', '4', '6', '8', '10', 'Q']
@@ -137,12 +116,10 @@ def checkCard(card,list,hypothesis):
   if colorcurrent in list:
    hypothesis = hypothesis +"and "+ "equal(color(current),"+ ","+colorcurrent+"))"
 
-
-
-
   return hypothesis
 
 
+# finding Similarity between alternate correct cards, for postion we use the list of correct cards
 def findSimilarity(cards,card1,card2,list,hypothesis,correct,threshold):
     allowedvalues = []
     allowedsuits = []
@@ -175,8 +152,6 @@ def findSimilarity(cards,card1,card2,list,hypothesis,correct,threshold):
     suitcurrent = extract("Suit", card1)
     valuecurrent = extract("Value", card1)
     colorcurrent = extract("Color", card1)
-    print  valuecurrent
-
 
     suitprevious2 = extract("Suit", card2)
     valueprevious2 = extract("Value", card2)
@@ -218,58 +193,53 @@ def findSimilarity(cards,card1,card2,list,hypothesis,correct,threshold):
 
     if valuecurrent in Royal and valueprevious2 in Royal:
      threshold['Royal'] = threshold['Royal'] + 1
-     alternatehypothesis['Royal'] = alternatehypothesis['Royal'] +"(is_Royal(suit(previous2)" + "," + "Royal" + "))" + "," + "equal(is_Royal(current)" + "," + "Royal" + ")))"
-
-
+     alternatehypothesis['Royal'] = alternatehypothesis['Royal'] +"(is_royal(suit(previous2)" + "," + "Royal" + "))" + "," + "equal(is_royal(current)" + "," + "Royal" + ")))"
     alter=""
 
     if len(cards)>6:
      if threshold['Suit']>=2:
-      alter=alter+","+alternatehypothesis['Suit']
+      if len(alter)==0:
+       alter=alternatehypothesis['Suit']
+      else:
+       alter=alter+","+alternatehypothesis['Suit']
      if threshold['Color'] >= 2:
-      alter = alter +","+ alternatehypothesis['Color']
+      if len(alter) == 0:
+       alter = alternatehypothesis['Color']
+      else:
+       alter = alter +","+ alternatehypothesis['Color']
      if threshold['Value.odd']>=2:
-      alter = alter +","+  alternatehypothesis['Value.odd']
+      if len(alter) == 0:
+       alter = alternatehypothesis['Value.odd']
+      else:
+       alter = alter +","+  alternatehypothesis['Value.odd']
      if threshold['Value.even'] >= 2:
-      alter = alter  +","+  alternatehypothesis['Value.even']
+      if len(alter) == 0:
+       alter = alternatehypothesis['Value.even']
+      else:
+       alter = alter + "," + alternatehypothesis['Value.even']
      if  threshold['Royal'] >= 2:
-      alter = alter +","+ alternatehypothesis['Royal']
+      if len(alter) == 0:
+       alter = alternatehypothesis['Royal']
+      else:
+       alter= alter + "," + alternatehypothesis['Royal']
+
 
     else:
      alter=alternatehypothesis['Suit'] +","+ alternatehypothesis['Color'] +","+  alternatehypothesis['Value.odd'] +","+ alternatehypothesis['Value.even'] +","+ alternatehypothesis['Royal']
 
     alter="andf"+'('+alter+')'
     print threshold
-
-
-
     return alter
 
-
-
-
+#Main function which runs "findSimilarity on the list of all and correct cards
 def CheckAlternate(wrong,hypothesis,correct,state):
-
  list=parseRule(hypothesis)
-
-
  allcards = state
- #print allcards
-
-
- """if len(x)!=0
- for x in wrong:
-  hypothesis=checkCard(x,list,hypothesis)"""
-
-
 
  for i  in range(0,len(state)):
   if i+2<len(state):
    if allcards[i] in  correct and allcards[i+2] in correct:
     hypothesis=findSimilarity(state,allcards[i],allcards[i+2],list,hypothesis,correct,threshold)
-
-
-
  return hypothesis
 
 wrong=[]
