@@ -5,6 +5,8 @@ from random import randint
 from new_eleusis import *
 from rule import *
 from prune import *
+import checkAlternate
+import Main
 global game_ended
 game_ended = False
 board_list=[]
@@ -65,6 +67,7 @@ class Adversary(object):
         """
         # Return a rule with a probability of 1/14
         prob_list = [i for i in range(14)]
+        print "problist",prob_list
         for i in prob_list:
             prob=i
             if prob == 10:
@@ -91,11 +94,13 @@ adversary2 = Adversary()
 adversary3 = Adversary()
 
 # Set a rule for testing
-g_rule = "if(andf(even(current),equal(color(current),B)), True,False)"
+g_rule = "if(even(current),True,False)"
 setRule(g_rule)
 
 # The three cards that adhere to the rule
-cards = ["4S", "6S", "8S"]
+cards = ["4S", "4H", "8S"]
+
+
 for i in cards:
     correct.append(i)
 """
@@ -114,8 +119,11 @@ for round_num in range(14):
     try:
         #Player 1 plays
         player_card_rule = player.play(hypothesis,cards)
-        print player_card_rule,flag
-        if is_card(player_card_rule) and flag<6:
+
+        print  "OUR FINAL RULE",hypothesis+ checkAlternate.CheckAlternate(Main.wrong, hypothesis,Main.correct,cards)
+        print "cards" + cards
+        print "correct" + Main.correct
+        if is_card(player_card_rule) and flag<2:
             del cards[0]
             cards.append(player_card_rule)
             test=correct[(len(correct)-2):len(correct)]
@@ -146,7 +154,10 @@ for round_num in range(14):
                 hypothesis=prune(hypothesis,correct)
                 print "adv",hypothesis
         else:
-            print "OUR RULE:", hypothesis
+            print "OUR RULE:",hypothesis+ checkAlternate.CheckAlternate(Main.wrong, hypothesis,Main.correct,cards)
+            print  "WITH ALTERNATE", checkAlternate.CheckAlternate(Main.wrong,hypothesis,Main.correct,cards)
+            #print  "these are wrong" ,Main.wrong
+            #print  "these are CORRECT", Main.correct
             print boardState()
             our_score=-25
             player1=1
@@ -166,7 +177,6 @@ for round_num in range(14):
                 correct.append(ad1_card_rule)
                 print "adversary1",correct
                 if len(tuple1)>0:
-                    print "ad1 tup"
                     list3=list(tuple1)
                     list3.append(list1)
                     tuple1=tuple(list3)
@@ -208,7 +218,6 @@ for round_num in range(14):
                 hypothesis=prune(hypothesis,correct)
                 print "ad1 prune",hypothesis
                 if len(tuple1)>0:
-                    print "ad2 tup"
                     list3=list(tuple1)
                     list3.append(list1)
                     tuple1=tuple(list3)
@@ -246,7 +255,6 @@ for round_num in range(14):
                 print "ad3 prune",hypothesis
                 print "evaluate",p
                 if len(tuple1)>0:
-                    print "ad3 tup"
                     list3=list(tuple1)
                     list3.append(list1)
                     tuple1=tuple(list3)
@@ -274,6 +282,7 @@ for round_num in range(14):
 
 # Everyone has to guess a rule
 if round_num==13:
+    print "ended"
     game_ended=True
 rule_player = player.play(hypothesis,cards)
 print rule_player
