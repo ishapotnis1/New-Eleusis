@@ -14,6 +14,6 @@ Nitika Khurana : 1)Card generation based on current best hypothesis and input gi
 Komal Sharan : 1) Current Best hypothesis and validator function.
           
 Part 2 :
-1. Isha Potnis: 1.) Alternate rule card generator
-2. Srishty Saha: 1.) Pruning rule set
-3. Nitika Khurana: 1.) Incorporate less and greater,plus ,minus and generate random card.
+1. Komal Sharan : 1.) Alternate rule generator 
+2. Isha Potnis and Srishty Saha: 1.) Pruning rule set and modifying according to tree structure
+3. Nitika Khurana: 1.) Incorporate less and greater,plus ,minus and generate random card and and modifying according to tree structure
